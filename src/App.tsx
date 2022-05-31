@@ -1,26 +1,28 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+import { MoralisProvider} from "react-moralis";
+import { useState } from "react";
+import SignIn from "./SignIn";
+import { SignOut } from "./SignOut";
+import  AlertsApp  from "./AlertsApp";
+import styles from "./styles/Home.module.css";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <MoralisProvider serverUrl="https://tmplbudfhggp.usemoralis.com:2053/server" appId="zciDyDJrxgyMjOVHmbUo7IE8xtqxswlwZshrJRaz"> 
+      <div><h1>Crypto-Push</h1></div>
+      <AlertsApp/>
+    </MoralisProvider>
   );
 }
 
 export default App;
+
+/*
+<div>
+      <div className={styles.backgroundParent}>
+        {isAuthenticated ? <SignOut /> : <SignIn />}
+      </div>
+    </div>
+*/
