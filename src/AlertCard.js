@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 export const AlertCard = () => {
   
   //application data
-  const { logout, Moralis, user, ethAddress } = useMoralis();
+  const { isAuthenticated, logout, Moralis, user, ethAddress } = useMoralis();
   
   const [alertCoin, setAlertCoin] = useState("BTC");
   const [alertCoinPercent, setAlertCoinPercent] = useState("None");
@@ -27,6 +27,7 @@ export const AlertCard = () => {
   
   useEffect(() => {
     fetchBalance();
+    console.log("alert card is authenticated ->", isAuthenticated);
   }, []);
 
   return ( 
@@ -39,7 +40,7 @@ export const AlertCard = () => {
               placeholder={"Ticker/Contract Address"}
               onChange={e => setAlertCoin(e.target.value.toUpperCase())} 
               required />
-          <p className={signOutStyle.pAlert}>  Coin Selected : {alertCoin}</p> 
+          <p className={signOutStyle.pAlert}>  Coin Selected : {/*alertCoin*/ isAuthenticated}</p> 
           <select  className={signOutStyle.sAlert} onChange ={ (event) => { setAlertCoinPercent(event.target.value) }}>
                 <option value="1">1%</option>
                 <option value="5">5%</option>

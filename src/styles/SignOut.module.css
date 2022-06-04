@@ -83,7 +83,7 @@
   width: 72vw;
   height: 240px;
   background-color: rgb(255, 255, 255);
-  padding: 20px;
+  padding: 40px;
   border-radius: 20px;
   display: inline-block;
   vertical-align:top;
@@ -97,7 +97,7 @@
   width: 20vw;
   height: 300px;
   background-color: rgb(255, 255, 255);
-  padding: 20px;
+  padding: 40px;
   border-radius: 20px;
   display: inline-block;
   vertical-align:top;
@@ -111,7 +111,7 @@
   width: 45vw;
   height: 300px;
   background-color: rgb(255, 255, 255);
-  padding: 20px;
+  padding: 40px;
   border-radius: 20px;
   display: inline-block;
   flex-direction: row;
@@ -126,7 +126,7 @@
   width: 32vw;
   height: 300px;
   background-color: rgb(255, 255, 255);
-  padding: 20px;
+  padding: 40px;
   border-radius: 20px;
   display: inline-block;
   flex-direction: row;

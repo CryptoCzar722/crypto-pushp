@@ -11,7 +11,19 @@ import TradingViewWidget from 'react-tradingview-widget';
 export const SwapCard = () => {
   
   //application data
-  const { logout, Moralis, user, ethAddress } = useMoralis();
+  const { isAuthenticated, logout, Moralis, user, ethAddress, authenticate, authError, isAuthenticating } = useMoralis();
+
+  const handleCustomLogin = async () => {
+    await authenticate({
+      provider: "web3Auth",
+      clientId: "BN-6dNNgKK_DJmhff63kvmqoyfUMVTEYdjRbp_pIZCvdPmj69n94pHl4rVCymrqmuUQAnB91e-5Go2TA2LzSdyM",
+      chainId: Moralis.Chains.BNB,
+      theme: 'dark',
+      appLogo: "",
+      logingMethodsOrder : ["google", "facebook", "twitter"]//, "reddit", "discord", "twitch", "apple", "github", "linkedin", "email_passwordless"]
+    });
+  };
+
   const [balance, setBalance] = useState(0);
   const [viewKey, setviewKey] = useState(0);
   //order info
@@ -33,6 +45,8 @@ export const SwapCard = () => {
   
   useEffect(() => {
     fetchBalance();
+    //console.log("swap card is authenticated ->", isAuthenticated);
+    Moralis.start({"appId" : "zciDyDJrxgyMjOVHmbUo7IE8xtqxswlwZshrJRaz","serverUrl" : "https://tmplbudfhggp.usemoralis.com:2053/server"});
   }, []);
 
   return ( 
@@ -43,7 +57,7 @@ export const SwapCard = () => {
       <select  className={signOutStyle.sSwap} onChange ={ (event) => { setOrderExchange(event.target.value) }}>
             <option value="PancakeSwap">PancakeSwap</option>
       </select>
-      <p className={signOutStyle.pAlert}>  Coin In : {swapCoin}</p> 
+      <p className={signOutStyle.pAlert}>  Coin In : {swapCoin }</p> 
       <input
           className= {signOutStyle.iSwap} //"form-control form-control-lg"
           type="text"
@@ -72,9 +86,19 @@ export const SwapCard = () => {
           onChange={e => setLimitPrice(e.target.value.toUpperCase())} 
           required />
       }
-          <button className={styles.swapButton} onClick={logout}>
-          Set Alert
+          <button className={styles.swapButton} onClick={console.log("swap in dev")}>
+          Swap
           </button>
+          {isAuthenticated ?
+          <button className={styles.signoutButton} onClick={logout}>
+          Sign Out
+          </button>
+          :          
+          <button className={styles.signinButton} onClick={handleCustomLogin}>
+            Sign In
+          </button>
+
+          } 
     </div>
     <div className={signOutStyle.chart}>
       <TradingViewWidget

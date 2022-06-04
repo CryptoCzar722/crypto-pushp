@@ -38,6 +38,7 @@ export const TopTen = () => {
   useEffect(() => {
     fetchBalance();
     queryTop10();
+    Moralis.start({"appId" : "zciDyDJrxgyMjOVHmbUo7IE8xtqxswlwZshrJRaz","serverUrl" : "https://tmplbudfhggp.usemoralis.com:2053/server"});
   }, []);
 
 
