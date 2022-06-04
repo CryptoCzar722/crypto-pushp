@@ -1,4 +1,5 @@
 //import Image from "next/image";
+import React from 'react';
 import { useMoralis } from "react-moralis";
 import styles from "./styles/Home.module.css";
 //import Logo from "./images/Web3Auth.svg";

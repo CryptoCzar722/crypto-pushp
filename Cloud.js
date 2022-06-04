@@ -104,7 +104,6 @@ Moralis.Cloud.job("UpdateRecentCoinStats", (request) =>{
     });
 });
 
-
 //Trading bot functions
 Moralis.Cloud.beforeSave("Trades", async (request) =>{
       const logger = Moralis.Cloud.getLogger();

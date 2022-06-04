@@ -1,8 +1,10 @@
+import React from 'react';
 import { useMoralis } from "react-moralis";
 import signOutStyle from "./styles/SignOut.module.css";
 import styles from "./styles/Home.module.css";
 import { useEffect, useState } from "react";
 import ReactSpeedometer from "react-d3-speedometer"
+
 //must be last import
 //const axios = require("axios");
 //import TradingViewWidget from 'react-tradingview-widget';
@@ -15,6 +17,15 @@ export const SignOut = () => {
   const [recentLosers, setRecentLosers] = useState([]);
   const [recentGainers, setRecentGainers] = useState([]);
   const [top10, setTop10] = useState([]);
+
+  const { logout, Moralis, user, ethAddress } = useMoralis();
+  const [balance, setBalance] = useState(0);
+  const [viewKey, setviewKey] = useState(0);
+  const [alertCoin, setAlertCoin] = useState("None");
+  const [alertCoinPercent, setAlertCoinPercent] = useState("None");
+  const [alertDirection, setAlertDirection] = useState("None");
+  const [phoneNumber,setPhoneNumber] = useState("");
+
   
   const queryFnG = async ()=> {
     const query = new Moralis.Query("FearGreed");
@@ -61,11 +72,6 @@ export const SignOut = () => {
     queryRecentLosers();
     queryRecentCoins();
   }, []);
-
-  const { logout, Moralis, user, ethAddress } = useMoralis();
-  const [balance, setBalance] = useState(0);
-  const [viewKey, setviewKey] = useState(0);
-  const [alertCoin, setAlertCoin] = useState("BTC");
 
   const fetchBalance = async () => {
     try {
@@ -118,7 +124,7 @@ export const SignOut = () => {
     return (
         <tr  className={signOutStyle.td} key={name}>
           <td>{name}</td>
-          <td>{onedaychange}</td>
+          <td>-{onedaychange}</td>
           <td>{overallrank}</td>
           <td>{price}</td>
           <td>{volumetradedinoneday}</td>
@@ -169,7 +175,7 @@ const renderTableDataTop10 = () => {
         <p className={signOutStyle.subHeader}>Details:</p>
           <div className={signOutStyle.detailsDiv}>
           <div>
-            <h5>Account:</h5>
+            <h5>Account: </h5>
             <p>{user.attributes.accounts}</p>
           </div>
           <div className={signOutStyle.pTextHidden} >
@@ -193,17 +199,45 @@ const renderTableDataTop10 = () => {
     </div>
 
     <div className={signOutStyle.alertCard}>
-      <h4> Alerts </h4>
-        <div>
-               
-        </div>    
+        <div className={signOutStyle.alertCardMini}>
+        <h4 className={signOutStyle.hAlert}> Alerts </h4>
+          <input
+              className= {signOutStyle.iAlert} //"form-control form-control-lg"
+              type="text"
+              placeholder={"Coin"}
+              onChange={e => setAlertCoin(e.target.value.toUpperCase())} 
+              required />
+          <p className={signOutStyle.pAlert}>  Coin Selected : {alertCoin}</p> 
+          <select  className={signOutStyle.sAlert} onChange ={ (event) => { setAlertCoinPercent(event.target.value) }}>
+                <option value="1">1%</option>
+                <option value="5">5%</option>
+                <option value="10">10%</option>
+                <option value="15">15%</option>
+          </select>
+          <p className={signOutStyle.pAlert}>  Percent Selected : {alertCoinPercent == "None" ? alertCoinPercent : alertCoinPercent + "%" }</p> 
+          <select className={signOutStyle.sAlert} onChange ={ (event) => { setAlertDirection(event.target.value) }}>
+                <option value="increase">increase</option>
+                <option value="decrease">decrease</option>
+                <option value="either">inc. or dec.</option>
+          </select>
+          <p className={signOutStyle.pAlert} >  Price Direction : {alertDirection}</p> 
+          <input
+              className= {signOutStyle.iAlert}//"form-control form-control-lg"
+              type="text"
+              placeholder={"+1XXXXXXXXXX"}
+              onChange={e => setPhoneNumber(e.target.value.toUpperCase())} 
+              required />
+              <button className={styles.alertButton} onClick={logout}>
+              Set Alert
+              </button>
+        </div>   
       </div>
     </div>
 
     <div>
       
     <div className={signOutStyle.top10Card}>
-      <h4> Top 10 </h4>
+      <h4 className= {signOutStyle.hTop10}> Top 10 </h4>
         <div>
                 <table className={signOutStyle.table}>
                   <thead>
