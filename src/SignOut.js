@@ -3,56 +3,12 @@ import signOutStyle from "./styles/SignOut.module.css";
 import styles from "./styles/Home.module.css";
 import { useEffect, useState } from "react";
 import ReactSpeedometer from "react-d3-speedometer"
-
-
 //must be last import
-const axios = require("axios");
-
+//const axios = require("axios");
 //import TradingViewWidget from 'react-tradingview-widget';
 
 export const SignOut = () => {
-  const options = {
-    method: 'GET',
-    url: 'https://fear-and-greed-index.p.rapidapi.com/v1/fgi',
-    headers: {
-      'X-RapidAPI-Host': 'fear-and-greed-index.p.rapidapi.com',
-      'X-RapidAPI-Key': '5ef9e39a3bmsh53ec91281fe6737p1fb783jsnde933324d020'
-    }
-  };
 
-  const optionsRecent = {
-    method: 'GET',
-    url: 'https://crypto-tracker.p.rapidapi.com/api/recentlyadded',
-    headers: {
-      'X-RapidAPI-Host': 'crypto-tracker.p.rapidapi.com',
-      'X-RapidAPI-Key': '5ef9e39a3bmsh53ec91281fe6737p1fb783jsnde933324d020'
-    }
-  };
-  const optionsLosers = {
-    method: 'GET',
-    url: 'https://crypto-tracker.p.rapidapi.com/api/toplosers',
-    headers: {
-      'X-RapidAPI-Host': 'crypto-tracker.p.rapidapi.com',
-      'X-RapidAPI-Key': '5ef9e39a3bmsh53ec91281fe6737p1fb783jsnde933324d020'
-    }
-  };
-  const optionsGainers = {
-    method: 'GET',
-    url: 'https://crypto-tracker.p.rapidapi.com/api/topgainers',
-    headers: {
-      'X-RapidAPI-Host': 'crypto-tracker.p.rapidapi.com',
-      'X-RapidAPI-Key': '5ef9e39a3bmsh53ec91281fe6737p1fb783jsnde933324d020'
-    }
-  };
-  const optionsTopCap = {
-    method: 'GET',
-    url: 'https://crypto-tracker.p.rapidapi.com/api/top10',
-    headers: {
-      'X-RapidAPI-Host': 'crypto-tracker.p.rapidapi.com',
-      'X-RapidAPI-Key': '5ef9e39a3bmsh53ec91281fe6737p1fb783jsnde933324d020'
-    }
-  };
-  
   const [greed, setGreed] = useState(0);
   const [greedText, setGreedText] = useState(0);
   const [recentCoins, setRecentCoins] = useState([]);
@@ -60,45 +16,51 @@ export const SignOut = () => {
   const [recentGainers, setRecentGainers] = useState([]);
   const [top10, setTop10] = useState([]);
   
-  useEffect(() => {
-    axios.request(options).then(function (response) {
-      setGreed(response.data.fgi.now.value)
-      setGreedText(response.data.fgi.now.valueText)
-      //console.log(response.data);
-    }).catch(function (error) {
-      console.error(error);
-    });
-    //////////////////////////////////////////////////
-    /*axios.request(optionsRecent).then(function (response) {
-      //console.log(response.data.result);
-      setRecentCoins(response.data.result);
-    }).catch(function (error) {
-      console.error(error);
-    });
-    //////////////////////////////////////////////////
-    axios.request(optionsLosers).then(function (response) {
-      //console.log(response.data.result);
-      setRecentLosers(response.data.result);
-    }).catch(function (error) {
-      console.error(error);
-    });
-    /////////////////////////////////////////////////
-    axios.request(optionsGainers).then(function (response) {
-      //console.log(response.data.result);
-      setRecentGainers(response.data.result)
-    }).catch(function (error) {
-      console.error(error);
-    });
-    ////////////////////////////////////////////////
-    axios.request(optionsTopCap).then(function (response) {
-      console.log(response.data.result);
-      setTop10(response.data.result);
-    }).catch(function (error) {
-      console.error(error);
-    });*/
+  const queryFnG = async ()=> {
+    const query = new Moralis.Query("FearGreed");
+    const fng = await query.find();
+    const fngO = JSON.parse(fng[0].attributes.FearGreed)
+    //console.log("FearGreed-> ", fngO.fgi.now.value);
+    setGreed(fngO.fgi.now.value)
+    setGreedText(fngO.fgi.now.valueText)
+  }
+  const queryTop10 = async ()=> {
+    const query = new Moralis.Query("Top10");
+    const top10 = await query.find();
+    const top10O = JSON.parse(top10[0].attributes.Top10)
+    //console.log("top10-> ",top10O.result);
+    setTop10(top10O.result)
+  }
+  const queryRecentGainers = async ()=> {
+    const query = new Moralis.Query("TopGainers");
+    const topGs = await query.find();
+    const topGsO = JSON.parse(topGs[0].attributes.TopGainers)
+    //console.log("topGs-> ",topGsO.result);
+    setRecentGainers(topGsO.result)
+  }
+  const queryRecentLosers = async ()=> {
+    const query = new Moralis.Query("TopLosers");
+    const topLs = await query.find();
+    const topLsO = JSON.parse(topLs[0].attributes.TopLosers)
+    //console.log("topLs-> ",topLsO.result);
+    setRecentLosers(topLsO.result)
+  }
 
+  const queryRecentCoins = async ()=> {
+    const query = new Moralis.Query("NewCoins");
+    const newCoins = await query.find();
+    const newCoinsO = JSON.parse(newCoins[0].attributes.NewCoins)
+    console.log("newCoins-> ",newCoinsO.result);
+    setRecentCoins(newCoinsO.result)
+  }
+
+  useEffect(() => {    
+    queryFnG();
+    queryTop10();
+    queryRecentGainers();
+    queryRecentLosers();
+    queryRecentCoins();
   }, []);
-
 
   const { logout, Moralis, user, ethAddress } = useMoralis();
   const [balance, setBalance] = useState(0);
@@ -178,16 +140,7 @@ export const SignOut = () => {
     )
   })
   }
-  /* 
-  circulation: "19,053,800 BTC"
-  marketCap: "$584.89B$584,888,306,661"
-  name: "Bitcoin"
-  onedaychange: "5.06%"
-  price: "$30,696.68"
-  rank: "1"
-  sevendayschange: "1.91%"
-  volume: "$29,229,208,377952,195 BTC"
-  */
+
 const renderTableDataTop10 = () => {
   return top10.map((top10, index) => {
   const { circulation,marketCap,name,onedaychange,price,rank, sevendayschange,volume} = top10 //destructuring
@@ -254,14 +207,14 @@ const renderTableDataTop10 = () => {
         <div>
                 <table className={signOutStyle.table}>
                   <thead>
-                  <th>rank</th>
-                  <th>name</th>
-                  <th>marketCap</th>
-                  <th>circulation</th>
-                  <th>onedaychange</th>
-                  <th>price</th>
-                  <th>sevendayschange</th>
-                  <th>volume</th>
+                  <th>Rank</th>
+                  <th>Name</th>
+                  <th>Market Cap.</th>
+                  <th>Circulation</th>
+                  <th>1D</th>
+                  <th>Price</th>
+                  <th>7D</th>
+                  <th>Volume</th>
                   </thead>
                   <tbody >
                     {renderTableDataTop10()}
@@ -287,14 +240,14 @@ const renderTableDataTop10 = () => {
           <div>
             <table className={signOutStyle.table}>
             <thead>
-             <th>name</th>
-             <th>price</th>
-             <th>hour</th>
-             <th>day</th>
-             <th>chain</th>
-             <th>added</th>
-             <th>marketcap</th>
-             <th>volume</th>
+             <th>Name</th>
+             <th>Price</th>
+             <th>1H</th>
+             <th>1D</th>
+             <th>Chain</th>
+             <th>Added</th>
+             <th>Market Cap.</th>
+             <th>Volume</th>
             </thead>
                <tbody >
                 {renderTableData()}
@@ -308,11 +261,11 @@ const renderTableDataTop10 = () => {
           <div>
             <table className={signOutStyle.table}>
             <thead>
-              <th>name</th>
-              <th>24h</th>
-              <th>rank</th>
-              <th>price</th>
-              <th>volume</th>
+              <th>Name</th>
+              <th>24H</th>
+              <th>Rank</th>
+              <th>Price</th>
+              <th>Volume</th>
               </thead>
                <tbody>
                 {renderTableDataLosers()}
@@ -325,11 +278,11 @@ const renderTableDataTop10 = () => {
           <div>
             <table className={signOutStyle.table}>
               <thead>
-              <th>name</th>
+              <th>Name</th>
               <th>24h</th>
-              <th>rank</th>
-              <th>price</th>
-              <th>volume</th>
+              <th>Rank</th>
+              <th>Price</th>
+              <th>Volume</th>
               </thead>
 
                <tbody>
