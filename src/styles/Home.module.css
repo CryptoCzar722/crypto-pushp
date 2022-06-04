@@ -6,6 +6,9 @@
   justify-content: center;
   background-image: linear-gradient(40deg, #1ac7fe,#ffffff);
 }
+.divBack {
+  background-color: rgba(253, 255, 255, 0.449);
+}
 
 .card {
   width: 250px;

@@ -11,7 +11,7 @@ import styles from "./styles/Home.module.css";
 function App() {
   return (
     <MoralisProvider serverUrl="https://tmplbudfhggp.usemoralis.com:2053/server" appId="zciDyDJrxgyMjOVHmbUo7IE8xtqxswlwZshrJRaz"> 
-      <div><h1>Crypto-Push</h1></div>
+      <div className={styles.divBack} ><h1>Crypto-Push</h1></div>
       <AlertsApp/>
     </MoralisProvider>
   );

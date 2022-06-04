@@ -60,7 +60,6 @@ export const SignOut = () => {
   const [recentGainers, setRecentGainers] = useState([]);
   const [top10, setTop10] = useState([]);
   
-  
   useEffect(() => {
     axios.request(options).then(function (response) {
       setGreed(response.data.fgi.now.value)
