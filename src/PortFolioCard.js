@@ -105,13 +105,7 @@ export const PortFolioCard = () => {
         symbol={"BINANCE:"+swapCoin+"BUSD"}
         locale="fr"
         width = "500"
-        height ="175"
-      />
-      <TradingViewWidget
-        symbol={"BINANCE:"+swapCoinOut+"BUSD"}
-        locale="fr"
-        width = "500"
-        height ="175"
+        height ="300"
       />
     </div>
     </div>
