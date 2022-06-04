@@ -10,6 +10,7 @@ import { AlertCard } from "./AlertCard";
 import { TopTen } from './TopTen';
 import { FearCard } from './FearCard';
 import { NewCoinCard } from './NewCoinCard';
+import { PortFolioCard } from './PortFolioCard';
 import { TopGainers } from './TopGainers';
 import { TopLosers } from './TopLosers';
 //must be last import
@@ -55,7 +56,7 @@ export const SignOut = () => {
         <SwapCard/>
         <AlertCard/>
       </div>
-
+      <PortFolioCard/>
       <div>
         <TopTen/>
       </div>

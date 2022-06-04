@@ -21,6 +21,7 @@ export const TopTen = () => {
     const query = new Moralis.Query("Top10");
     const top10 = await query.find();
     const top10O = JSON.parse(top10[0].attributes.Top10)
+    setDateUpdated(top10[0].attributes.updatedAt.toString());
     //console.log("top10-> ",top10O.result);
     setTop10(top10O.result)
   }

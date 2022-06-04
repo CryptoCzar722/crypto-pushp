@@ -7,12 +7,14 @@
   background-image: linear-gradient(40deg, #1ac7fe,#ffffff);
 }
 .divBack {
-  background-color: rgb(7, 3, 3);
+  background-color: rgb(255, 255, 255);
   height : 40px
 }
 .hNav{
   margin-left: 40px;
-  color: white;
+  margin-bottom: 25px;
+  margin-top: 5px;
+  color: rgb(0, 0, 0);
 }
 .card {
   width: 250px;

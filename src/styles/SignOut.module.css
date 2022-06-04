@@ -52,6 +52,17 @@
   margin-bottom : 3px;
 }
 
+.iError{
+  height: 100px;
+  width: 100px;
+  margin-top: 35px;
+}
+.hError{
+  margin-top : 0px;
+  margin-bottom : 3px;
+}
+
+
 .iSwap {
   margin-top : 0px;
   margin-bottom : 3px;

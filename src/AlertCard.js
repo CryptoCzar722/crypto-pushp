@@ -3,6 +3,7 @@ import { useMoralis } from "react-moralis";
 import signOutStyle from "./styles/SignOut.module.css";
 import styles from "./styles/Home.module.css";
 import { useEffect, useState } from "react";
+import { FaBan } from 'react-icons/fa';
 
 export const AlertCard = () => {
   
@@ -33,7 +34,11 @@ export const AlertCard = () => {
   return ( 
     <div className={signOutStyle.alertCard}>
         <div className={signOutStyle.alertCardMini}>
-        <h4 className={signOutStyle.hAlert}> Alerts </h4>
+        <h4 className={signOutStyle.hAlert}> Text Alerts </h4>
+          {
+            isAuthenticated 
+            ?
+            <>
           <input
               className= {signOutStyle.iAlert} //"form-control form-control-lg"
               type="text"
@@ -63,7 +68,17 @@ export const AlertCard = () => {
               <button className={styles.alertButton} onClick={logout}>
               Set Alert
               </button>
-        </div>   
+              </>
+        :
+        <>
+        
+        <FaBan  className={signOutStyle.iError} />
+        <h4 className={signOutStyle.hError}> Login to Get Alerts </h4>
+        </>
+      }
+      
+        </div>  
+         
       </div>
   );
 };

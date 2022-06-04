@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 //const axios = require("axios");
 import TradingViewWidget from 'react-tradingview-widget';
 
-export const SwapCard = () => {
+export const PortFolioCard = () => {
   
   //application data
   const { isAuthenticated, logout, Moralis, user, ethAddress, authenticate, authError, isAuthenticating } = useMoralis();
@@ -29,8 +29,6 @@ export const SwapCard = () => {
   //order info
   const [orderType,setOrderType] = useState("market");
   const [swapCoin, setSwapCoin] = useState("BTC");
-  const [swapCoinAmount, setSwapCoinAmount] = useState("BTC");
-  
   const [swapCoinOut, setSwapCoinOut] = useState("BTC");
   const [orderExchange,setOrderExchange] = useState("PancakeSwap");
   const [limitPrice,setLimitPrice] = useState("1");
@@ -65,12 +63,6 @@ export const SwapCard = () => {
           type="text"
           placeholder={"BTC"}
           onChange={e => setSwapCoin(e.target.value.toUpperCase())} 
-          required />
-      <input
-          className= {signOutStyle.iSwap} //"form-control form-control-lg"
-          type="text"
-          placeholder={"0.0"}
-          onChange={e => setSwapCoinAmount(e.target.value.toUpperCase())} 
           required />
       <p className={signOutStyle.pAlert}>  Coin Out : {swapCoinOut}</p>   
       <input
