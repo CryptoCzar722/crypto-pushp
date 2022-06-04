@@ -1,8 +1,8 @@
 .signOutCard {
   margin-top : 50px;
   margin-right : 65px;
-  width: 40vw;
-  height: 300px;
+  width: 46vw;
+  height: 340px;
   background-color: rgb(255, 255, 255);
   padding: 20px;
   border-radius: 20px;
@@ -14,8 +14,8 @@
 .alertCard {
   margin-top : 50px;
   margin-right : 65px;
-  width: 25vw;
-  height: 300px;
+  width: 20vw;
+  height: 340px;
   background-color: rgb(255, 255, 255);
   padding: 20px;
   border-radius: 20px;
@@ -28,10 +28,10 @@
 .alertCardMini {
   text-align: center;
   margin-right : 15px;
-  margin-left : 15px;
-  margin-top : 15px;
+  margin-left : 20px;
+  margin-top : 38px;
   margin-bottom : 0px;
-  width: 20vw;
+  width: 15vw;
   height: 230px;
   background-image: linear-gradient(320deg, #1ac7fe,#ffffff);
   padding: 20px;
@@ -52,6 +52,18 @@
   margin-bottom : 3px;
 }
 
+.iSwap {
+  margin-top : 0px;
+  margin-bottom : 3px;
+  height: 20px;
+  width: 150px;
+  border-radius: 50px;
+}
+.sSwap {
+  height: 25px;
+  width: 160px;
+  border-radius: 50px;
+}
 .iAlert {
   margin-top : 0px;
   margin-bottom : 3px;
@@ -119,6 +131,30 @@
   display: inline-block;
   flex-direction: row;
   vertical-align:top;
+  position: relative;
+}
+
+.chart{
+  display: inline-block;
+  flex-direction: row;
+  vertical-align:top;
+  position: relative;
+  border-radius: 20px;
+}
+
+.swapCardMini {
+  text-align: center;
+  margin-right : 22px;
+  margin-left : 10px;
+  margin-top : 0px;
+  margin-bottom : 0px;
+  width: 150px;
+  height: 300px;
+  background-image: linear-gradient(320deg, #ffffff,#1ac7fe);
+  padding: 20px;
+  border-radius: 20px;
+  display: inline-block;
+  flex-direction: column;
   position: relative;
 }
 

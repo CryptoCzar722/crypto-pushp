@@ -3,49 +3,40 @@ import { useMoralis } from "react-moralis";
 import signOutStyle from "./styles/SignOut.module.css";
 import styles from "./styles/Home.module.css";
 import { useEffect, useState } from "react";
-import ReactSpeedometer from "react-d3-speedometer"
 
+
+import { SwapCard } from "./SwapCard";
+import { AlertCard } from "./AlertCard";
+import { TopTen } from './TopTen';
+import { FearCard } from './FearCard';
 //must be last import
 //const axios = require("axios");
-//import TradingViewWidget from 'react-tradingview-widget';
 
 export const SignOut = () => {
-
-  const [greed, setGreed] = useState(0);
-  const [greedText, setGreedText] = useState(0);
+  //database query info
   const [recentCoins, setRecentCoins] = useState([]);
   const [recentLosers, setRecentLosers] = useState([]);
   const [recentGainers, setRecentGainers] = useState([]);
   const [top10, setTop10] = useState([]);
-
+  const [dateUpdated, setDateUpdated] = useState("");
+  
+  //application data
   const { logout, Moralis, user, ethAddress } = useMoralis();
   const [balance, setBalance] = useState(0);
   const [viewKey, setviewKey] = useState(0);
-  const [alertCoin, setAlertCoin] = useState("None");
+  const [alertCoin, setAlertCoin] = useState("BTC");
   const [alertCoinPercent, setAlertCoinPercent] = useState("None");
   const [alertDirection, setAlertDirection] = useState("None");
   const [phoneNumber,setPhoneNumber] = useState("");
-
+  //order info
+  //queries
   
-  const queryFnG = async ()=> {
-    const query = new Moralis.Query("FearGreed");
-    const fng = await query.find();
-    const fngO = JSON.parse(fng[0].attributes.FearGreed)
-    //console.log("FearGreed-> ", fngO.fgi.now.value);
-    setGreed(fngO.fgi.now.value)
-    setGreedText(fngO.fgi.now.valueText)
-  }
-  const queryTop10 = async ()=> {
-    const query = new Moralis.Query("Top10");
-    const top10 = await query.find();
-    const top10O = JSON.parse(top10[0].attributes.Top10)
-    //console.log("top10-> ",top10O.result);
-    setTop10(top10O.result)
-  }
+
   const queryRecentGainers = async ()=> {
     const query = new Moralis.Query("TopGainers");
     const topGs = await query.find();
     const topGsO = JSON.parse(topGs[0].attributes.TopGainers)
+    setDateUpdated(new Date(topGs[0].attributes.updatedAt.toString()).toString());
     //console.log("topGs-> ",topGsO.result);
     setRecentGainers(topGsO.result)
   }
@@ -53,6 +44,7 @@ export const SignOut = () => {
     const query = new Moralis.Query("TopLosers");
     const topLs = await query.find();
     const topLsO = JSON.parse(topLs[0].attributes.TopLosers)
+    setDateUpdated(new Date(topLs[0].attributes.updatedAt.toString()).toString());
     //console.log("topLs-> ",topLsO.result);
     setRecentLosers(topLsO.result)
   }
@@ -61,13 +53,14 @@ export const SignOut = () => {
     const query = new Moralis.Query("NewCoins");
     const newCoins = await query.find();
     const newCoinsO = JSON.parse(newCoins[0].attributes.NewCoins)
-    console.log("newCoins-> ",newCoinsO.result);
+    //console.log("newCoins-> ",newCoins[0].attributes.updatedAt);
+    setDateUpdated(new Date(newCoins[0].attributes.updatedAt.toString()).toString());
     setRecentCoins(newCoinsO.result)
   }
 
   useEffect(() => {    
-    queryFnG();
-    queryTop10();
+    //queryFnG();
+    //queryTop10();
     queryRecentGainers();
     queryRecentLosers();
     queryRecentCoins();
@@ -146,131 +139,20 @@ export const SignOut = () => {
     )
   })
   }
-
-const renderTableDataTop10 = () => {
-  return top10.map((top10, index) => {
-  const { circulation,marketCap,name,onedaychange,price,rank, sevendayschange,volume} = top10 //destructuring
-    return (
-        <tr className={signOutStyle.td}  key={rank}>
-          <td>{rank}</td>
-          <td>{name}</td>
-          <td>{marketCap}</td>
-          <td>{circulation}</td>
-          <td>{onedaychange}</td>
-          <td>{price}</td>
-          <td>{sevendayschange}</td>
-          <td>{volume}</td>
-        </tr>
-    )
-  })
-  }
   return (
     <div>
       <div>
-        <div className={signOutStyle.signOutCard}>
-          <h4>CrypoPush Alerts (Built with Moralis x Web3Auth!)</h4>
-          <button className={`${signOutStyle.refresh}`} onClick={fetchBalance}>
-            Refresh
-          </button>
-        <p className={signOutStyle.subHeader}>Details:</p>
-          <div className={signOutStyle.detailsDiv}>
-          <div>
-            <h5>Account: </h5>
-            <p>{user.attributes.accounts}</p>
-          </div>
-          <div className={signOutStyle.pTextHidden} >
-            <h5>Private Key:</h5>
-              <p className={signOutStyle.pTextHidden}> {user.attributes.authData.moralisEth.signature}</p>
-          </div>
-          <div>
-            <h5>Balance (Eth)</h5>
-            <p>{balance} </p>
-          </div>
-
-        <div className={signOutStyle.fotter}>
-          <button className={styles.loginButton} onClick={handleTransfer}>
-            Test Transfer
-          </button>
-          <button className={styles.loginButton} onClick={logout}>
-            Sign Out
-          </button>
-        </div>
+        <SwapCard/>
+        <AlertCard/>
       </div>
-    </div>
-
-    <div className={signOutStyle.alertCard}>
-        <div className={signOutStyle.alertCardMini}>
-        <h4 className={signOutStyle.hAlert}> Alerts </h4>
-          <input
-              className= {signOutStyle.iAlert} //"form-control form-control-lg"
-              type="text"
-              placeholder={"Coin"}
-              onChange={e => setAlertCoin(e.target.value.toUpperCase())} 
-              required />
-          <p className={signOutStyle.pAlert}>  Coin Selected : {alertCoin}</p> 
-          <select  className={signOutStyle.sAlert} onChange ={ (event) => { setAlertCoinPercent(event.target.value) }}>
-                <option value="1">1%</option>
-                <option value="5">5%</option>
-                <option value="10">10%</option>
-                <option value="15">15%</option>
-          </select>
-          <p className={signOutStyle.pAlert}>  Percent Selected : {alertCoinPercent == "None" ? alertCoinPercent : alertCoinPercent + "%" }</p> 
-          <select className={signOutStyle.sAlert} onChange ={ (event) => { setAlertDirection(event.target.value) }}>
-                <option value="increase">increase</option>
-                <option value="decrease">decrease</option>
-                <option value="either">inc. or dec.</option>
-          </select>
-          <p className={signOutStyle.pAlert} >  Price Direction : {alertDirection}</p> 
-          <input
-              className= {signOutStyle.iAlert}//"form-control form-control-lg"
-              type="text"
-              placeholder={"+1XXXXXXXXXX"}
-              onChange={e => setPhoneNumber(e.target.value.toUpperCase())} 
-              required />
-              <button className={styles.alertButton} onClick={logout}>
-              Set Alert
-              </button>
-        </div>   
-      </div>
-    </div>
 
     <div>
-      
-    <div className={signOutStyle.top10Card}>
-      <h4 className= {signOutStyle.hTop10}> Top 10 </h4>
-        <div>
-                <table className={signOutStyle.table}>
-                  <thead>
-                  <th>Rank</th>
-                  <th>Name</th>
-                  <th>Market Cap.</th>
-                  <th>Circulation</th>
-                  <th>1D</th>
-                  <th>Price</th>
-                  <th>7D</th>
-                  <th>Volume</th>
-                  </thead>
-                  <tbody >
-                    {renderTableDataTop10()}
-                  </tbody>
-                </table>
-        </div>    
-      </div>
+      <TopTen/>
     </div>
-    <div className={signOutStyle.smallCard}>
-          <h5>Fear&Greed Index</h5>
-          <p>{greedText}</p>
-          <ReactSpeedometer
-            maxValue={100}
-            value={greed}
-            needleColor="black"
-            startColor="red"
-            segments={7}
-            endColor="green"
-          />
-        </div>
+    <FearCard/>
     <div className={signOutStyle.medCard}>
           <h5>New Projects</h5>
+          <h7>{dateUpdated}</h7>
           <div>
             <table className={signOutStyle.table}>
             <thead>
@@ -292,6 +174,7 @@ const renderTableDataTop10 = () => {
     <div>
     <div className={signOutStyle.gainersCard}>
           <h5>Biggest Losers</h5>
+          <h7>{dateUpdated}</h7>
           <div>
             <table className={signOutStyle.table}>
             <thead>
@@ -308,7 +191,8 @@ const renderTableDataTop10 = () => {
          </div>
     </div>
     <div className={signOutStyle.gainersCard}>
-          <h5>Biggest Gainers</h5>
+          <h5>Biggest Gainers update </h5>
+          <h7>{dateUpdated}</h7>
           <div>
             <table className={signOutStyle.table}>
               <thead>
@@ -329,3 +213,36 @@ const renderTableDataTop10 = () => {
     </div>
   );
 };
+
+/*
+
+        <p className={signOutStyle.subHeader}>Details:</p>
+          <div className={signOutStyle.detailsDiv}>
+          <div>
+            <h5>Account: </h5>
+            <p>{user.attributes.accounts}</p>
+          </div>
+          <div className={signOutStyle.pTextHidden} >
+            <h5>Private Key:</h5>
+              <p className={signOutStyle.pTextHidden}> {user.attributes.authData.moralisEth.signature}</p>
+          </div>
+          <div>
+            <h5>Balance (Eth)</h5>
+            <p>{balance} </p>
+          </div>
+        </div>
+
+        <div className={signOutStyle.fotter}>
+          <button className={styles.loginButton} onClick={handleTransfer}>
+            Test Transfer
+          </button>
+          <button className={styles.loginButton} onClick={logout}>
+            Sign Out
+          </button>
+          <button className={`${signOutStyle.refresh}`} onClick={fetchBalance}>
+            Refresh
+          </button>
+        </div>
+        
+        */
+
