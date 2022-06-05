@@ -25,18 +25,8 @@ export const SignOut = () => {
   
   const options = { chain: "bsc", address: "0x3B7Be8B0a1538d41B2D9784327CB951ee74D7D4E"}
 
-  const fetchBalance = async () => {
-    try {
-      //tag 
-      //console.log(user.attributes.authData.moralisEth.signature)
-      
-      const balance = await Moralis.Web3API.account.getNativeBalance(options);
-      
-      setBalance(balance.balance / 10 ** 18);
-    } catch {}
-  };
   useEffect(() => {
-    //fetchBalance();
+
     Moralis.start({"appId" : "zciDyDJrxgyMjOVHmbUo7IE8xtqxswlwZshrJRaz","serverUrl" : "https://tmplbudfhggp.usemoralis.com:2053/server"});
   }, []);
 
@@ -49,7 +39,7 @@ export const SignOut = () => {
       }).then((e) => {
         alert("sucesfully transfered");
       });
-      await fetchBalance();
+      //await fetchBalance();
     } catch {}
   };
 

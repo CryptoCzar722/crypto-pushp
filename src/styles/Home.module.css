@@ -53,23 +53,21 @@
   color: white;
   background-color: #0364ff;
   cursor: pointer;
-  float:right;
   display: inline-block;
 }
 .newcoinArrowButtonL {
   width: 40px;
   padding: 10px;
   margin-left : 730px;
-  margin-right : 20px;
   border-radius: 15px;
   border-width: 0px;
   color: white;
   background-color: #0364ff;
   cursor: pointer;
-  float:left;
+  display: inline-block;
 }
 .hNewCoin{
-  float:middle;
+  text-align: center;
 }
 
 .alertButton{

@@ -27,7 +27,7 @@ export const AlertCard = () => {
   };
   
   useEffect(() => {
-    fetchBalance();
+    //fetchBalance();
     console.log("alert card is authenticated ->", isAuthenticated);
   }, []);
 

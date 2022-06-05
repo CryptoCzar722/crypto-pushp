@@ -11,27 +11,30 @@ export const NewCoinCard = () => {
   const { logout, Moralis, user, ethAddress } = useMoralis();
   const [dateUpdated, setDateUpdated] = useState("");
   const [recentCoins, setRecentCoins] = useState([]);
+  const [cardCoins, setCardCoins] = useState([]);
   
   const [card, setCard] = useState(0);
 
   const queryRecentCoins = async ()=> {
     const query = new Moralis.Query("NewCoins");
     const newCoins = await query.find();
-    console.log("typeof(newCoins)-> ",newCoins[1]);
+    //console.log("typeof(newCoins)-> ",newCoins.length);
     const newCoinsO = JSON.parse(newCoins[newCoins.length-1].attributes.NewCoins)
     //console.log("newCoins-> ",newCoins[newCoins.length-1]);
     setDateUpdated((newCoins[newCoins.length-1].attributes.updatedAt.toString()).toString());
-    setRecentCoins(newCoinsO.result)
+    setCardCoins(newCoinsO.result)
+    setRecentCoins(newCoins)
   }
   
   useEffect(() => {
     queryRecentCoins();
     Moralis.start({"appId" : "zciDyDJrxgyMjOVHmbUo7IE8xtqxswlwZshrJRaz","serverUrl" : "https://tmplbudfhggp.usemoralis.com:2053/server"});
   }, []);
+
 //newest coinmarketcap coins
 const renderTableData = () => {
-    return recentCoins.map((recentCoins, index) => {
-       const { Blockchain, added, marketCap, volume, rank, name, price,onehourchange,onedaychange} = recentCoins //destructuring
+    return cardCoins.map((cardCoins, index) => {
+       const { Blockchain, added, marketCap, volume, rank, name, price,onehourchange,onedaychange} = cardCoins //destructuring
        return (
           <tr className={signOutStyle.td} key={name}>
              <td>{name}</td>
@@ -47,17 +50,43 @@ const renderTableData = () => {
        )
     })
   }
+  const updateCardData = () => {
+    if (card >= (recentCoins.length-1)){
+      setCard(recentCoins.length-1)
+      return;
+    }
+    setCard(card+1)
+
+    const newCoinsO = JSON.parse(recentCoins[card].attributes.NewCoins)
+    console.log("inc newCoins-> ",recentCoins[card]);
+    setDateUpdated((recentCoins[card].attributes.updatedAt.toString()).toString());
+    setCardCoins(newCoinsO.result) 
+  }
+
+  const updateCardDataDown = () => {
+    if (card <= 0){
+      setCard(0)
+      return;
+    }
+    setCard(card-1)
+    
+    const newCoinsO = JSON.parse(recentCoins[card].attributes.NewCoins)
+    console.log("newCoins-> ",recentCoins[card]);
+    setDateUpdated((recentCoins[card].attributes.updatedAt.toString()).toString());
+    setCardCoins(newCoinsO.result)
+    
+  }
   
   return ( 
     <div className={signOutStyle.medCard}>
     <h5 >New Projects</h5>
-      <button className={styles.newcoinArrowButtonR}  onClick={() => {setCard(card+1) }}>
+      <button className={styles.newcoinArrowButtonR}  onClick={() => {updateCardData()  }}>
             {"<"}
       </button>
-      <h5 className={styles.hNewCoin}>{dateUpdated}</h5>
-      <button className={styles.newcoinArrowButtonL}  onClick={() => { setCard(card-1) }}>
+      <button className={styles.newcoinArrowButtonL}  onClick={() => { updateCardDataDown() }}>
                   {">"}
       </button>
+      <h5 className={styles.hNewCoin}>{dateUpdated} </h5>
           <div>
             <table className={signOutStyle.table}>
             <thead>

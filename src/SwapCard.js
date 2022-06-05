@@ -46,12 +46,14 @@ export const SwapCard = () => {
   };
   
   useEffect(() => {
-    fetchBalance();
+    //fetchBalance();
     //console.log("swap card is authenticated ->", isAuthenticated);
     Moralis.start({"appId" : "zciDyDJrxgyMjOVHmbUo7IE8xtqxswlwZshrJRaz","serverUrl" : "https://tmplbudfhggp.usemoralis.com:2053/server"});
   }, []);
 
-  return ( 
+//<p className={signOutStyle.pAlert}> Order Type : {orderType} </p>
+  
+return ( 
     <div className={signOutStyle.signOutCard}>
     <div>
     <div className={signOutStyle.swapCardMini}>
@@ -66,6 +68,7 @@ export const SwapCard = () => {
           placeholder={"BUSD"}
           onChange={e => setSwapCoin(e.target.value.toUpperCase())} 
           required />
+      <p className={signOutStyle.pAlert}>  Amount In : {swapCoinAmount }</p> 
       <input
           className= {signOutStyle.iSwap} //"form-control form-control-lg"
           type="number"
@@ -79,7 +82,6 @@ export const SwapCard = () => {
           placeholder={"BNB"}
           onChange={e => setSwapCoinOut(e.target.value.toUpperCase())} 
           required />
-      <p className={signOutStyle.pAlert}> Order Type : {orderType} </p>
       <select  className={signOutStyle.sSwap} onChange ={ (event) => { setOrderType(event.target.value) }}>
             <option value="market">market</option>
             <option value="limit">limit</option>
@@ -90,7 +92,7 @@ export const SwapCard = () => {
       <input
           className= {signOutStyle.iSwap}//"form-control form-control-lg"
           type="text"
-          placeholder={"BTC"}
+          placeholder={"50.0"}
           onChange={e => setLimitPrice(e.target.value.toUpperCase())} 
           required />
       }
