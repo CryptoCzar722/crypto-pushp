@@ -45,7 +45,7 @@ export const PortFolioCard = () => {
     //console.log("swap card is authenticated ->", isAuthenticated);
     Moralis.start({"appId" : "zciDyDJrxgyMjOVHmbUo7IE8xtqxswlwZshrJRaz","serverUrl" : "https://tmplbudfhggp.usemoralis.com:2053/server"});
     axios.request(optionsERC20).then(function (response) {
-        console.log("portfolio->",response.data);
+        //console.log("portfolio->",response.data);
         setBalanceERC20(response.data);
         let dateNow = "1:05 AM";//new Date();
         setDateUpdated(dateNow);

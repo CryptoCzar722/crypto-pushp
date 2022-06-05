@@ -32,12 +32,11 @@ export const SignOut = () => {
       
       const balance = await Moralis.Web3API.account.getNativeBalance(options);
       
-      
       setBalance(balance.balance / 10 ** 18);
     } catch {}
   };
   useEffect(() => {
-    fetchBalance();
+    //fetchBalance();
     Moralis.start({"appId" : "zciDyDJrxgyMjOVHmbUo7IE8xtqxswlwZshrJRaz","serverUrl" : "https://tmplbudfhggp.usemoralis.com:2053/server"});
   }, []);
 

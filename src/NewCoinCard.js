@@ -12,12 +12,15 @@ export const NewCoinCard = () => {
   const [dateUpdated, setDateUpdated] = useState("");
   const [recentCoins, setRecentCoins] = useState([]);
   
+  const [card, setCard] = useState(0);
+
   const queryRecentCoins = async ()=> {
     const query = new Moralis.Query("NewCoins");
     const newCoins = await query.find();
-    const newCoinsO = JSON.parse(newCoins[0].attributes.NewCoins)
-    //console.log("newCoins-> ",newCoins[0].attributes.updatedAt);
-    setDateUpdated(new Date(newCoins[0].attributes.updatedAt.toString()).toString());
+    console.log("typeof(newCoins)-> ",newCoins[1]);
+    const newCoinsO = JSON.parse(newCoins[newCoins.length-1].attributes.NewCoins)
+    //console.log("newCoins-> ",newCoins[newCoins.length-1]);
+    setDateUpdated((newCoins[newCoins.length-1].attributes.updatedAt.toString()).toString());
     setRecentCoins(newCoinsO.result)
   }
   
@@ -47,8 +50,14 @@ const renderTableData = () => {
   
   return ( 
     <div className={signOutStyle.medCard}>
-          <h5>New Projects</h5>
-          <h5>{dateUpdated}</h5>
+    <h5 >New Projects</h5>
+      <button className={styles.newcoinArrowButtonR}  onClick={() => {setCard(card+1) }}>
+            {"<"}
+      </button>
+      <h5 className={styles.hNewCoin}>{dateUpdated}</h5>
+      <button className={styles.newcoinArrowButtonL}  onClick={() => { setCard(card-1) }}>
+                  {">"}
+      </button>
           <div>
             <table className={signOutStyle.table}>
             <thead>
@@ -67,6 +76,7 @@ const renderTableData = () => {
                 {renderTableData()}
                </tbody>
             </table>
+           
          </div>
     </div>
     
