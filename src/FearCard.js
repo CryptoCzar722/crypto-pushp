@@ -32,7 +32,7 @@ export const FearCard = () => {
   return ( 
     <div className={signOutStyle.smallCard}>
           <h5>Fear&Greed Index</h5>
-          <h7>{dateUpdated}</h7>
+          <h5>{dateUpdated}</h5>
           <p>{greedText}</p>
           <ReactSpeedometer
             maxValue={100}

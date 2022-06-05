@@ -1,7 +1,7 @@
 import React from 'react';
 import { useMoralis } from "react-moralis";
-import signOutStyle from "./styles/SignOut.module.css";
-import styles from "./styles/Home.module.css";
+//import signOutStyle from "./styles/SignOut.module.css";
+//import styles from "./styles/Home.module.css";
 import { useEffect, useState } from "react";
 
 
@@ -21,13 +21,18 @@ export const SignOut = () => {
   //application data
   const { logout, Moralis, user, ethAddress } = useMoralis();
   const [balance, setBalance] = useState(0);
+  const [balancesERC, setBalanceERC] = useState([]);
+  
+  const options = { chain: "bsc", address: "0x3B7Be8B0a1538d41B2D9784327CB951ee74D7D4E"}
 
   const fetchBalance = async () => {
     try {
       //tag 
       //console.log(user.attributes.authData.moralisEth.signature)
-      const options = { chain: Moralis.Chains.BNB };
+      
       const balance = await Moralis.Web3API.account.getNativeBalance(options);
+      
+      
       setBalance(balance.balance / 10 ** 18);
     } catch {}
   };

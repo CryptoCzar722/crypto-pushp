@@ -48,18 +48,20 @@ const renderTableData = () => {
   return ( 
     <div className={signOutStyle.medCard}>
           <h5>New Projects</h5>
-          <h7>{dateUpdated}</h7>
+          <h5>{dateUpdated}</h5>
           <div>
             <table className={signOutStyle.table}>
             <thead>
-             <th>Name</th>
-             <th>Price</th>
-             <th>1H</th>
-             <th>1D</th>
-             <th>Chain</th>
-             <th>Added</th>
-             <th>Market Cap.</th>
-             <th>Volume</th>
+              <tr>
+                <th>Name</th>
+                <th>Price</th>
+                <th>1H</th>
+                <th>1D</th>
+                <th>Chain</th>
+                <th>Added</th>
+                <th>Market Cap.</th>
+                <th>Volume</th>
+              </tr>
             </thead>
                <tbody >
                 {renderTableData()}

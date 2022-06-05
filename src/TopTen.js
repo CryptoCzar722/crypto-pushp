@@ -4,9 +4,6 @@ import signOutStyle from "./styles/SignOut.module.css";
 import styles from "./styles/Home.module.css";
 import { useEffect, useState } from "react";
 
-//must be last import
-//const axios = require("axios");
-import TradingViewWidget from 'react-tradingview-widget';
 
 export const TopTen = () => {
   
@@ -64,18 +61,20 @@ const renderTableDataTop10 = () => {
   return ( 
     <div className={signOutStyle.top10Card}>
       <h5 className= {signOutStyle.hTop10}> Top 10 </h5>
-      <h7>{dateUpdated}</h7>
+      <h5>{dateUpdated}</h5>
         <div>
                 <table className={signOutStyle.table}>
                   <thead>
-                  <th>Rank</th>
-                  <th>Name</th>
-                  <th>Market Cap.</th>
-                  <th>Circulation</th>
-                  <th>1D</th>
-                  <th>Price</th>
-                  <th>7D</th>
-                  <th>Volume</th>
+                    <tr>
+                      <th>Rank</th>
+                      <th>Name</th>
+                      <th>Market Cap.</th>
+                      <th>Circulation</th>
+                      <th>1D</th>
+                      <th>Price</th>
+                      <th>7D</th>
+                      <th>Volume</th>
+                    </tr>
                   </thead>
                   <tbody >
                     {renderTableDataTop10()}

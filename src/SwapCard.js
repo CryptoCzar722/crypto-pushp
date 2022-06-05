@@ -28,10 +28,10 @@ export const SwapCard = () => {
   const [viewKey, setviewKey] = useState(0);
   //order info
   const [orderType,setOrderType] = useState("market");
-  const [swapCoin, setSwapCoin] = useState("BTC");
-  const [swapCoinAmount, setSwapCoinAmount] = useState("BTC");
+  const [swapCoin, setSwapCoin] = useState("BUSD");
+  const [swapCoinAmount, setSwapCoinAmount] = useState("0.0");
   
-  const [swapCoinOut, setSwapCoinOut] = useState("BTC");
+  const [swapCoinOut, setSwapCoinOut] = useState("BNB");
   const [orderExchange,setOrderExchange] = useState("PancakeSwap");
   const [limitPrice,setLimitPrice] = useState("1");
   
@@ -63,12 +63,12 @@ export const SwapCard = () => {
       <input
           className= {signOutStyle.iSwap} //"form-control form-control-lg"
           type="text"
-          placeholder={"BTC"}
+          placeholder={"BUSD"}
           onChange={e => setSwapCoin(e.target.value.toUpperCase())} 
           required />
       <input
           className= {signOutStyle.iSwap} //"form-control form-control-lg"
-          type="text"
+          type="number"
           placeholder={"0.0"}
           onChange={e => setSwapCoinAmount(e.target.value.toUpperCase())} 
           required />
@@ -76,7 +76,7 @@ export const SwapCard = () => {
       <input
           className= {signOutStyle.iSwap}//"form-control form-control-lg"
           type="text"
-          placeholder={"BUSD"}
+          placeholder={"BNB"}
           onChange={e => setSwapCoinOut(e.target.value.toUpperCase())} 
           required />
       <p className={signOutStyle.pAlert}> Order Type : {orderType} </p>
@@ -94,7 +94,7 @@ export const SwapCard = () => {
           onChange={e => setLimitPrice(e.target.value.toUpperCase())} 
           required />
       }
-          <button className={styles.swapButton} onClick={console.log("swap in dev")}>
+          <button className={styles.swapButton} >
           Swap
           </button>
           {isAuthenticated ?
@@ -110,16 +110,10 @@ export const SwapCard = () => {
     </div>
     <div className={signOutStyle.chart}>
       <TradingViewWidget
-        symbol={"BINANCE:"+swapCoin+"BUSD"}
-        locale="fr"
-        width = "500"
-        height ="175"
-      />
-      <TradingViewWidget
         symbol={"BINANCE:"+swapCoinOut+"BUSD"}
         locale="fr"
-        width = "500"
-        height ="175"
+        width = {500}
+        height ={315}
       />
     </div>
     </div>
@@ -129,6 +123,13 @@ export const SwapCard = () => {
 };
 
   /*
+  <TradingViewWidget
+        symbol={"BINANCE:"+swapCoin+"BUSD"}
+        locale="fr"
+        width = {500}
+        height ={175}
+      />
+
     <div>
       <div>
         <div className={signOutStyle.signOutCard}>

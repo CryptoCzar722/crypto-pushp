@@ -43,15 +43,17 @@ export const TopGainers = () => {
   return ( 
     <div className={signOutStyle.gainersCard}>
           <h5>Biggest Gainers update </h5>
-          <h7>{dateUpdated}</h7>
+          <h5>{dateUpdated}</h5>
           <div>
             <table className={signOutStyle.table}>
               <thead>
-              <th>Name</th>
-              <th>24h</th>
-              <th>Rank</th>
-              <th>Price</th>
-              <th>Volume</th>
+                <tr>
+                  <th>Name</th>
+                  <th>24h</th>
+                  <th>Rank</th>
+                  <th>Price</th>
+                  <th>Volume</th>
+                </tr>
               </thead>
 
                <tbody>

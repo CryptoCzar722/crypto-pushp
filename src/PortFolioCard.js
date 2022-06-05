@@ -3,13 +3,27 @@ import { useMoralis } from "react-moralis";
 import signOutStyle from "./styles/SignOut.module.css";
 import styles from "./styles/Home.module.css";
 import { useEffect, useState } from "react";
+import { FaBan } from 'react-icons/fa';
 
 //must be last import
-//const axios = require("axios");
-import TradingViewWidget from 'react-tradingview-widget';
+const axios = require("axios");
+/*
+curl -X 'GET' \
+  'https://deep-index.moralis.io/api/v2/0x3B7Be8B0a1538d41B2D9784327CB951ee74D7D4E/erc20?chain=0x38' \
+  -H 'accept: application/json' \
+  -H 'X-API-Key: ZwRSxOl8dC52wkmj42u34rKl92UimdHvbO1kg1oVXktQ5fHKprjNvHl3zbCbiUuW'
+
+*/
 
 export const PortFolioCard = () => {
-  
+  const optionsERC20 = {
+    method: 'GET',
+    url: 'https://deep-index.moralis.io/api/v2/0x3B7Be8B0a1538d41B2D9784327CB951ee74D7D4E/erc20?chain=0x38',
+    headers: {
+      'accept': 'application/json',
+      'X-API-Key': 'ZwRSxOl8dC52wkmj42u34rKl92UimdHvbO1kg1oVXktQ5fHKprjNvHl3zbCbiUuW'
+    }
+  };
   //application data
   const { isAuthenticated, logout, Moralis, user, ethAddress, authenticate, authError, isAuthenticating } = useMoralis();
 
@@ -24,193 +38,85 @@ export const PortFolioCard = () => {
     });
   };
 
-  const [balance, setBalance] = useState(0);
-  const [viewKey, setviewKey] = useState(0);
-  //order info
-  const [orderType,setOrderType] = useState("market");
-  const [swapCoin, setSwapCoin] = useState("BTC");
-  const [swapCoinOut, setSwapCoinOut] = useState("BTC");
-  const [orderExchange,setOrderExchange] = useState("PancakeSwap");
-  const [limitPrice,setLimitPrice] = useState("1");
-  
-  const fetchBalance = async () => {
-    try {
-      //tag 
-      //console.log(user.attributes.authData.moralisEth.signature)
-      const options = { chain: Moralis.Chains.BNB };
-      const balance = await Moralis.Web3API.account.getNativeBalance(options);
-      setBalance(balance.balance / 10 ** 18);
-    } catch {}
-  };
-  
+  const [balanceERC20, setBalanceERC20] = useState([]);
+  const [dateUpdated, setDateUpdated] = useState("");
+
   useEffect(() => {
-    fetchBalance();
     //console.log("swap card is authenticated ->", isAuthenticated);
     Moralis.start({"appId" : "zciDyDJrxgyMjOVHmbUo7IE8xtqxswlwZshrJRaz","serverUrl" : "https://tmplbudfhggp.usemoralis.com:2053/server"});
-  }, []);
+    axios.request(optionsERC20).then(function (response) {
+        console.log("portfolio->",response.data);
+        setBalanceERC20(response.data);
+        let dateNow = "1:05 AM";//new Date();
+        setDateUpdated(dateNow);
+      }).catch(function (error) {
+        console.error(error);
+      });
+    //fetchBalance();
+   }, []);
 
-  return ( 
-    <div className={signOutStyle.signOutCard}>
-    <div>
-    <div className={signOutStyle.swapCardMini}>
-      <h4 className={signOutStyle.hAlert}> Swap </h4>
-      <select  className={signOutStyle.sSwap} onChange ={ (event) => { setOrderExchange(event.target.value) }}>
-            <option value="PancakeSwap">PancakeSwap</option>
-      </select>
-      <p className={signOutStyle.pAlert}>  Coin In : {swapCoin }</p> 
-      <input
-          className= {signOutStyle.iSwap} //"form-control form-control-lg"
-          type="text"
-          placeholder={"BTC"}
-          onChange={e => setSwapCoin(e.target.value.toUpperCase())} 
-          required />
-      <p className={signOutStyle.pAlert}>  Coin Out : {swapCoinOut}</p>   
-      <input
-          className= {signOutStyle.iSwap}//"form-control form-control-lg"
-          type="text"
-          placeholder={"BUSD"}
-          onChange={e => setSwapCoinOut(e.target.value.toUpperCase())} 
-          required />
-      <p className={signOutStyle.pAlert}> Order Type : {orderType} </p>
-      <select  className={signOutStyle.sSwap} onChange ={ (event) => { setOrderType(event.target.value) }}>
-            <option value="market">market</option>
-            <option value="limit">limit</option>
-      </select>
-      {orderType == "market" ? 
-      <p className={signOutStyle.pAlert}> Place Order</p> 
-      :
-      <input
-          className= {signOutStyle.iSwap}//"form-control form-control-lg"
-          type="text"
-          placeholder={"BTC"}
-          onChange={e => setLimitPrice(e.target.value.toUpperCase())} 
-          required />
-      }
-          <button className={styles.swapButton} onClick={console.log("swap in dev")}>
-          Swap
-          </button>
-          {isAuthenticated ?
-          <button className={styles.signoutButton} onClick={logout}>
-          Logout
-          </button>
-          :          
-          <button className={styles.signinButton} onClick={handleCustomLogin}>
-             Login
-          </button>
-
-          } 
-    </div>
-    <div className={signOutStyle.chart}>
-      <TradingViewWidget
-        symbol={"BINANCE:"+swapCoin+"BUSD"}
-        locale="fr"
-        width = "500"
-        height ="300"
-      />
-    </div>
-    </div>
-</div>
-
-  );
-};
-
-  /*
-    <div>
-      <div>
-        <div className={signOutStyle.signOutCard}>
-        <div>
-        <div className={signOutStyle.swapCardMini}>
-          <h4 className={signOutStyle.hAlert}> Swap </h4>
-          <select  className={signOutStyle.sSwap} onChange ={ (event) => { setOrderExchange(event.target.value) }}>
-                <option value="PancakeSwap">PancakeSwap</option>
-          </select>
-          <p className={signOutStyle.pAlert}>  Coin In : {swapCoin}</p> 
-          <input
-              className= {signOutStyle.iSwap} //"form-control form-control-lg"
-              type="text"
-              placeholder={"BTC"}
-              onChange={e => setSwapCoin(e.target.value.toUpperCase())} 
-              required />
-          <p className={signOutStyle.pAlert}>  Coin Out : {swapCoinOut}</p>   
-          <input
-              className= {signOutStyle.iSwap}//"form-control form-control-lg"
-              type="text"
-              placeholder={"BUSD"}
-              onChange={e => setSwapCoinOut(e.target.value.toUpperCase())} 
-              required />
-          <p className={signOutStyle.pAlert}> Order Type : {orderType} </p>
-          <select  className={signOutStyle.sSwap} onChange ={ (event) => { setOrderType(event.target.value) }}>
-                <option value="market">market</option>
-                <option value="limit">limit</option>
-          </select>
-          {orderType == "market" ? 
-          <p className={signOutStyle.pAlert}> Place Order</p> 
-          :
-          <input
-              className= {signOutStyle.iSwap}//"form-control form-control-lg"
-              type="text"
-              placeholder={"$1.00"}
-              onChange={e => setLimitPrice(e.target.value.toUpperCase())} 
-              required />
-          }
-              <button className={styles.swapButton} onClick={logout}>
-              Set Alert
-              </button>
-        </div>
-        <div className={signOutStyle.chart}>
-          <TradingViewWidget
-            symbol={"BINANCE:"+swapCoin+"BUSD"}
-            locale="fr"
-            width = "500"
-            height ="175"
-          />
-          <TradingViewWidget
-            symbol={"BINANCE:"+swapCoinOut+"BUSD"}
-            locale="fr"
-            width = "500"
-            height ="175"
-          />
-        </div>
-        </div>
-    </div>
-    </div>
-    <div>
-    </div>
-    <div>
-    </div>
-    </div>
-  );
-};
-*/
 /*
+balance: "2907"
+decimals: 5
+logo: null
+name: "Safuu"
+symbol: "SAFUU"
+thumbnail: null
+token_address: "0xe5ba47fd94cb645ba4119222e34fb33f59c7cd90"
+*/
+const renderTableDataPortfolio = () => {
+    return balanceERC20.map((balanceERC20, index) => {
+    const { balance,decimals,logo,name,symbol,thumbnail,token_address} = balanceERC20 //destructuring
+      return (
+          <tr className={signOutStyle.td}  key={token_address}>
+            <td>{name}</td>
+            <td>{symbol}</td>
+            <td>{decimals == "18" ? Moralis.Units.FromWei(balance) : Moralis.Units.FromWei(balance, decimals)}</td>
+            <td>{parseFloat(decimals)}</td>
+            <td>{token_address}</td>
+          </tr>
+      )
+    })
+    }
+/*
+            <div className={signOutStyle.swapCardMini}>
+            </div>
 
-        <p className={signOutStyle.subHeader}>Details:</p>
-          <div className={signOutStyle.detailsDiv}>
-          <div>
-            <h5>Account: </h5>
-            <p>{user.attributes.accounts}</p>
-          </div>
-          <div className={signOutStyle.pTextHidden} >
-            <h5>Private Key:</h5>
-              <p className={signOutStyle.pTextHidden}> {user.attributes.authData.moralisEth.signature}</p>
-          </div>
-          <div>
-            <h5>Balance (Eth)</h5>
-            <p>{balance} </p>
-          </div>
+              {
+                    isAuthenticated
+                    ?
+
+                    :
+                    <>
+                    <FaBan className={signOutStyle.iErrorPortfolio} />
+                    <h4 className={signOutStyle.hErrorPortfolio}> Login for Portfolio </h4>
+                    </>
+                } 
+*/
+  return ( 
+    <div className={signOutStyle.portfolioCard}>
+        <div>
+            <h5 className= {signOutStyle.hTop10}> Portfolio </h5>
+                  
+                    <div>
+                            <table className={signOutStyle.table}>
+                            <thead>
+                                <tr>
+                                    <th>name</th>
+                                    <th>symbol</th>
+                                    <th>balance</th>
+                                    <th>decimals</th>
+                                    <th>token_address</th>
+                                </tr>
+                            </thead>
+                            <tbody >
+                                {renderTableDataPortfolio()}
+                            </tbody>
+                            </table>
+                    </div> 
+                    
         </div>
+    </div>
 
-        <div className={signOutStyle.fotter}>
-          <button className={styles.loginButton} onClick={handleTransfer}>
-            Test Transfer
-          </button>
-          <button className={styles.loginButton} onClick={logout}>
-            Sign Out
-          </button>
-          <button className={`${signOutStyle.refresh}`} onClick={fetchBalance}>
-            Refresh
-          </button>
-        </div>
-        
-        */
-
+  );
+};
