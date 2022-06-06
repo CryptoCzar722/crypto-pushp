@@ -128,15 +128,6 @@ export const PortFolioCard = () => {
       })
    */
 
-/*
-balance: "2907"
-decimals: 5
-logo: null
-name: "Safuu"
-symbol: "SAFUU"
-thumbnail: null
-token_address: "0xe5ba47fd94cb645ba4119222e34fb33f59c7cd90"
-*/
 
 const renderTableDataPortfolio = () => {
     return balanceERC20.map((balanceERC20, index) => {
@@ -152,23 +143,12 @@ const renderTableDataPortfolio = () => {
       )
     })
     }
-/*
-            <div className={signOutStyle.swapCardMini}>
-            </div>
 
-              {
-                    isAuthenticated
-                    ?
-
-                    :
-                    <>
-                    <FaBan className={signOutStyle.iErrorPortfolio} />
-                    <h4 className={signOutStyle.hErrorPortfolio}> Login for Portfolio </h4>
-                    </>
-                } 
-*/
   return ( 
     <div className={signOutStyle.portfolioCard}>
+        {
+                    isAuthenticated
+                    ?
         <div>
             <h5 className= {signOutStyle.hTop10}> Portfolio ${totalBalance}</h5>
                     <div>
@@ -187,8 +167,13 @@ const renderTableDataPortfolio = () => {
                             </tbody>
                             </table>
                     </div> 
-                    
         </div>
+              :
+              <>
+              <FaBan className={signOutStyle.iErrorPortfolio} />
+              <h4 className={signOutStyle.hErrorPortfolio}> Login for Portfolio </h4>
+              </>
+      } 
     </div>
 
   );

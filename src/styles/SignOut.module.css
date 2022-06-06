@@ -103,6 +103,14 @@
   border-radius: 50px;
   text-align: center;
 }
+.divNewCoins{
+  display: inline;
+}
+.cNewCoins{
+  border-radius: 5px;
+  width : 90px;
+  display: inline;
+  }
 .iAlert {
   margin-top : 0px;
   margin-bottom : 3px;

@@ -78,32 +78,33 @@ const renderTableData = () => {
     setCardCoins(newCoinsO.result)
     
   }
-  
-  return ( 
-    <div className={signOutStyle.medCard}>
-    <h5 >New Projects</h5>
-      <button className={styles.newcoinArrowButtonR}  onClick={() => {updateCardData()  }}>
+  const FindDate = (date) => { 
+    console.log(date.toString().slice(0,15)); 
+    recentCoins.forEach(element =>{
+      //console.log("not found-> ",element.attributes.updatedAt.toString().slice(0,15))
+      if (date.toString().slice(0,15) == element.attributes.updatedAt.toString().slice(0,15))
+        {
+        //console.log("found new coins by date -> ",element.attributes.updatedAt.toString().slice(0,15))
+        //console.log("calendar newCoins-> ",element);
+        const newCoinsO = JSON.parse(element.attributes.NewCoins)
+        setDateUpdated((element.attributes.updatedAt.toString()).toString());
+        setCardCoins(newCoinsO.result)  
+      }
+    })
+    setStartDate(date)
+  }
+  /*
+  <button className={styles.newcoinArrowButtonR}  onClick={() => {updateCardData()  }}>
             {"<"}
       </button>
       <button className={styles.newcoinArrowButtonL}  onClick={() => { updateCardDataDown() }}>
                   {">"}
       </button>
-      <DatePicker selected={startDate} onChange={(date) => { 
-        console.log(date.toString().slice(0,15)); 
-        recentCoins.forEach(element =>{
-          console.log("not found-> ",element.attributes.updatedAt.toString().slice(0,15))
-          if (date.toString().slice(0,15) == element.attributes.updatedAt.toString().slice(0,15))
-            {
-            console.log("found new coins by date -> ",element.attributes.updatedAt.toString().slice(0,15))
-            //setCardCoins(element.attributes.NewCoins)
-            const newCoinsO = JSON.parse(element.attributes.NewCoins)
-            console.log("calendar newCoins-> ",element);
-            setDateUpdated((element.attributes.updatedAt.toString()).toString());
-            setCardCoins(newCoinsO.result)  
-          }
-        })
-        setStartDate(date)}
-        } />
+  */
+  return ( 
+    <div className={signOutStyle.medCard}>
+    <div className={signOutStyle.divNewCoins}>New Projects</div>
+      <DatePicker className={signOutStyle.calendar} selected={startDate} onChange={(date) => FindDate(date)} />
       <h5 className={styles.hNewCoin}>{dateUpdated} </h5>
           <div>
             <table className={signOutStyle.table}>
