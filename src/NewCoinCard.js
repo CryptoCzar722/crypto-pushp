@@ -3,7 +3,9 @@ import { useMoralis } from "react-moralis";
 import signOutStyle from "./styles/SignOut.module.css";
 import styles from "./styles/Home.module.css";
 import { useEffect, useState } from "react";
-import ReactSpeedometer from "react-d3-speedometer"
+//
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 export const NewCoinCard = () => {
   
@@ -12,8 +14,8 @@ export const NewCoinCard = () => {
   const [dateUpdated, setDateUpdated] = useState("");
   const [recentCoins, setRecentCoins] = useState([]);
   const [cardCoins, setCardCoins] = useState([]);
-  
   const [card, setCard] = useState(0);
+  const [startDate, setStartDate] = useState(new Date());
 
   const queryRecentCoins = async ()=> {
     const query = new Moralis.Query("NewCoins");
@@ -86,6 +88,22 @@ const renderTableData = () => {
       <button className={styles.newcoinArrowButtonL}  onClick={() => { updateCardDataDown() }}>
                   {">"}
       </button>
+      <DatePicker selected={startDate} onChange={(date) => { 
+        console.log(date.toString().slice(0,15)); 
+        recentCoins.forEach(element =>{
+          console.log("not found-> ",element.attributes.updatedAt.toString().slice(0,15))
+          if (date.toString().slice(0,15) == element.attributes.updatedAt.toString().slice(0,15))
+            {
+            console.log("found new coins by date -> ",element.attributes.updatedAt.toString().slice(0,15))
+            //setCardCoins(element.attributes.NewCoins)
+            const newCoinsO = JSON.parse(element.attributes.NewCoins)
+            console.log("calendar newCoins-> ",element);
+            setDateUpdated((element.attributes.updatedAt.toString()).toString());
+            setCardCoins(newCoinsO.result)  
+          }
+        })
+        setStartDate(date)}
+        } />
       <h5 className={styles.hNewCoin}>{dateUpdated} </h5>
           <div>
             <table className={signOutStyle.table}>

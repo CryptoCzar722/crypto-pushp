@@ -95,8 +95,8 @@ export const PortFolioCard = () => {
                     axios.request(optionsERC20Price).then(function (response) {
                         if (response.data.data.price > 0 && element.address != "0xba96731324de188ebc1ed87ca74544ddebc07d7f"){
                           //console.log("balanceERC20Price data->",response.data.data.name,response.data.data.price);
-                          const userBal = (parseFloat(formattedBalance * parseFloat(response.data.data.price)).toFixed(2));                        
-                          console.log(element.address,element.name, " USD ",userBal, totalBalance);
+                          let userBal = Number(formattedBalance * parseFloat(response.data.data.price));                        
+                          console.log(element.address,element.name, " USD ",typeof(userBal), totalBalance);
                           setTotalBalance(totalBalance+userBal)
                         }
                       }).catch(function (error) {
