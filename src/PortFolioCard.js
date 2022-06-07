@@ -5,6 +5,8 @@ import styles from "./styles/Home.module.css";
 import { useEffect, useState } from "react";
 import { FaBan } from 'react-icons/fa';
 
+import TradingViewWidget from 'react-tradingview-widget';
+
 //must be last import
 const axios = require("axios");
 /*
@@ -26,11 +28,13 @@ export const PortFolioCard = () => {
 
   const [balanceERC20, setBalanceERC20] = useState([]);
   const [dateUpdated, setDateUpdated] = useState("");
-  const[addressPrice,setAddressPrice] = useState("");
+  //const[addressPrice,setAddressPrice] = useState("");
   const[price,setPrice] = useState("");
   const[tokenArray,setTokenArray] = useState([]);
-  const[tokenBalanceArray,setTokenBalanceArray] = useState([]);
-  const[tokenDecArray,setTokenDecArray] = useState([]);
+  //
+  const [cardCoin, setCardCoin] = useState([]);
+  const [tokenAddress, setTokenAddress] = useState("");
+  const[tokenName,setTokenName] = useState("");
   const[totalBalance,setTotalBalance] = useState(0);
 
   const optionsERC20 = {
@@ -56,14 +60,60 @@ export const PortFolioCard = () => {
     });
   };
 
+  const FindToken = (tokenAddy) => { 
+    console.log("tokenAddy-> ",tokenAddy);
+    balanceERC20.forEach(element =>{
+      //console.log("not found-> ",element.attributes.updatedAt.toString().slice(0,15))
+      if ( element.token_address.toString() === tokenAddy)
+        {
+        console.log("found new coins by address");
+        const balanceFormatted = element.decimals == "18" ? parseFloat(Moralis.Units.FromWei(element.balance)).toFixed(4) : parseFloat(Moralis.Units.FromWei(element.balance, element.decimals)).toFixed(4)
+        const optionsERC20Price = {
+          method: 'GET',
+          url: `https://api.pancakeswap.info/api/v2/tokens/${element.token_address}`,
+          headers: {
+            'accept': 'application/json',
+          }
+        };  
+        axios.request(optionsERC20Price).then(function (response) {
+            let priceNow = parseFloat(response.data.data.price);                        
+            console.log(element.address,element.name, " USD ", price);
+            const coinData = {
+              name : element.name,
+              symbol : element.symbol,
+              address : element.token_address,
+              balance : balanceFormatted,
+              decimals : element.decimals,
+              price : priceNow
+            }
+            setCardCoin(coinData); 
+        }).catch(function (error) {
+          console.error(error);
+        });
+        }
+    })
+  }
+
   useEffect(() => {
     //console.log("swap card is authenticated ->", isAuthenticated);
     Moralis.start({"appId" : "zciDyDJrxgyMjOVHmbUo7IE8xtqxswlwZshrJRaz","serverUrl" : "https://tmplbudfhggp.usemoralis.com:2053/server"});
     axios.request(optionsERC20).then(function (response) {
-        //console.log("portfolio->",response.data);
+        //console.log("portfolio->",response.data[0]);
         setBalanceERC20(response.data);
+        
+        const balanceFormatted = response.data[0].decimals == "18" ? Moralis.Units.FromWei(response.data[0].balance) : Moralis.Units.FromWei(response.data[0].balance, response.data[0].decimals)
+        const coinData = {
+          decimals : response.data[0].decimals, 
+          name : response.data[0].name,
+          symbol : response.data[0].symbol,
+          address : response.data[0].token_address,
+          balance : balanceFormatted,
+          price : "0.00"
+        }
+        setCardCoin(coinData);
+        
         //console.log("response.data.length->",response.data.length);
-        (response.data).forEach(element => {
+        /*(response.data).forEach(element => {
           //console.log(tokenArray.length,"token_address->",element)
           const portfolioData = {
             name : element.name,
@@ -72,13 +122,17 @@ export const PortFolioCard = () => {
             decimals : element.decimals
           }
           tokenArray.push(portfolioData)
-        });
+        });*/
         
         //let dateNow = "1:05 AM";//new Date();
         //setDateUpdated(dateNow);
       }).catch(function (error) {
         console.error(error);
-      }).then(()=>{
+      }).then(()=> {
+        FindToken(cardCoin.address);
+      })
+      
+      /*.then(()=>{
           tokenArray.forEach(element => {
                 //console.log(tokenArray.length,"address->",element)
                 const optionsERC20Price = {
@@ -96,15 +150,15 @@ export const PortFolioCard = () => {
                         if (response.data.data.price > 0 && element.address != "0xba96731324de188ebc1ed87ca74544ddebc07d7f"){
                           //console.log("balanceERC20Price data->",response.data.data.name,response.data.data.price);
                           let userBal = Number(formattedBalance * parseFloat(response.data.data.price));                        
-                          console.log(element.address,element.name, " USD ",typeof(userBal), totalBalance);
-                          setTotalBalance(totalBalance+userBal)
+                          console.log(element.address,element.name, " USD ",(userBal), totalBalance);
+                          //setTotalBalance(totalBalance+userBal)
                         }
                       }).catch(function (error) {
                         console.error(error);
                       });
                     }
           });
-  });
+          });*/
     //fetchBalance();
    }, []);
    /*
@@ -128,30 +182,20 @@ export const PortFolioCard = () => {
       })
    */
 
-
-const renderTableDataPortfolio = () => {
-    return balanceERC20.map((balanceERC20, index) => {
-    const { balance,decimals,logo,name,symbol,thumbnail,token_address} = balanceERC20 //destructuring 
-    return (
-          <tr className={signOutStyle.td}  key={token_address}>
-            <td>{name}</td>
-            <td>{symbol}</td>
-            <td>{decimals == "18" ? Moralis.Units.FromWei(balance) : Moralis.Units.FromWei(balance, decimals)}</td>
-            <td>{parseFloat(decimals)}</td>
-            <td>{token_address}</td>
-          </tr>
-      )
-    })
-    }
-
-  return ( 
-    <div className={signOutStyle.portfolioCard}>
-        {
-                    isAuthenticated
-                    ?
-        <div>
-            <h5 className= {signOutStyle.hTop10}> Portfolio ${totalBalance}</h5>
-                    <div>
+const renderDropDataPortfolio = () => {
+        return balanceERC20.map((balanceERC20, index) => {
+        const { balance,decimals,logo,name,symbol,thumbnail,token_address} = balanceERC20 //destructuring 
+        //old titano
+       // if (token_address !== "0xba96731324de188ebc1ed87ca74544ddebc07d7f")
+       //     {
+            return (
+                  <option key={name} value={token_address}>{name}</option>
+                  )
+       //     }
+        })
+        }
+      
+/*
                             <table className={signOutStyle.table}>
                             <thead>
                                 <tr>
@@ -166,13 +210,101 @@ const renderTableDataPortfolio = () => {
                                 {renderTableDataPortfolio()}
                             </tbody>
                             </table>
-                    </div> 
+const renderTableDataPortfolio = () => {
+    return balanceERC20.map((balanceERC20, index) => {
+    const { balance,decimals,logo,name,symbol,thumbnail,token_address} = balanceERC20 //destructuring 
+    return (
+          <tr className={signOutStyle.td}  key={token_address}>
+            <td>{name}</td>
+            <td>{symbol}</td>
+            <td>{decimals == "18" ? Moralis.Units.FromWei(balance) : Moralis.Units.FromWei(balance, decimals)}</td>
+            <td>{parseFloat(decimals)}</td>
+            <td>{token_address}</td>
+          </tr>
+      )
+    })
+    }
+*/
+
+  return ( 
+    <div className={signOutStyle.portfolioCard}>
+        {
+        isAuthenticated
+        ?
+        <div>
+          <h5 className= {signOutStyle.hTop10}> Portfolio </h5>
+            <div className={signOutStyle.portfolioCardMini}>    
+              <select  className={signOutStyle.sPort} onChange ={ (event) => { 
+                //setTokenAddress(event.target.value) 
+                FindToken(event.target.value) 
+                }}>
+                {renderDropDataPortfolio()}
+              </select>  
+              <div>
+              <h5 align = "left" className= {signOutStyle.hPortL}>Address : </h5> 
+              <h5 className= {signOutStyle.hPortR}> {cardCoin.address}</h5> 
+              </div>
+              <hr
+                style={{
+                    color: "black",
+                    backgroundColor: "black",
+                    height: 1
+                }}
+            />
+            <div>
+              <h5 className= {signOutStyle.hPortL}>Balance : </h5> 
+              <h5 className= {signOutStyle.hPortR}> {cardCoin.name == "BUSD Token" ? "$" + cardCoin.balance: cardCoin.balance}</h5> 
+            </div>  
+            <hr
+                style={{
+                    color: "black",
+                    backgroundColor: "black",
+                    height: 1
+                }}
+            />
+            <div>
+              <h5 className= {signOutStyle.hPortL}>Price : </h5> 
+              <h5 className= {signOutStyle.hPortR}> {cardCoin.price}</h5> 
+            </div>  
+             
+              <hr
+                style={{
+                    color: "black",
+                    backgroundColor: "black",
+                    height: 1
+                }}
+            />
+             <div>
+              <h5 className= {signOutStyle.hPortL}>Token Decimals : </h5> 
+              <h5 className= {signOutStyle.hPortR}> {cardCoin.decimals}</h5> 
+              </div>
+              <hr
+                style={{
+                    color: "black",
+                    backgroundColor: "black",
+                    height: 1
+                }}
+            />
+            <div>
+              <h5 className= {signOutStyle.hPortL}> Symbol : </h5> 
+              <h5 className= {signOutStyle.hPortR}> {cardCoin.symbol}</h5> 
+              </div>
+            </div> 
+            <div className={signOutStyle.chart}>
+              <TradingViewWidget
+                  symbol={"BINANCE:"+cardCoin.symbol+"USDT"}
+                  locale="fr"
+                  width = {500}
+                  height ={315}
+                />
+              </div>
         </div>
-              :
-              <>
-              <FaBan className={signOutStyle.iErrorPortfolio} />
-              <h4 className={signOutStyle.hErrorPortfolio}> Login for Portfolio </h4>
-              </>
+        
+        :
+        <>
+          <FaBan className={signOutStyle.iErrorPortfolio} />
+            <h4 className={signOutStyle.hErrorPortfolio}> Login for Portfolio </h4>
+        </>
       } 
     </div>
 

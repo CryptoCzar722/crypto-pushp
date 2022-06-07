@@ -11,19 +11,6 @@
   position: relative;
 }
 
-.portfolioCard {
-  margin-top : 50px;
-  margin-right : 65px;
-  width: 1165px;
-  height: 480px;
-  background-color: rgb(255, 255, 255);
-  padding: 20px;
-  border-radius: 20px;
-  display: inline-block;
-  flex-direction: column;
-  position: relative;
-}
-
 .alertCard {
   margin-top : 50px;
   margin-right : 65px;
@@ -54,6 +41,24 @@
   flex-direction: row;
   position: relative;
 }
+
+.portfolioCardMini{
+  text-align: center;
+  margin-right : 30px;
+  margin-left : 20px;
+  margin-top : 38px;
+  margin-bottom : 0px;
+  width: 480px;
+  height: 230px;
+  background-image: linear-gradient(320deg, #1ac7fe,#ffffff);
+  padding: 20px;
+  border-radius: 20px;
+  display: inline-block;
+  vertical-align:top;
+  flex-direction: row;
+  position: relative;
+}
+
 .pAlert {
   font-size: 15px;
   text-align: center;
@@ -106,7 +111,7 @@
 .divNewCoins{
   display: inline;
 }
-.cNewCoins{
+.calendar{
   border-radius: 5px;
   width : 90px;
   display: inline;
@@ -126,13 +131,21 @@
   text-align: center;
 }
 
+.sPort {
+  height: 25px;
+  width: 150px;
+  margin-bottom : 25px;
+  border-radius: 50px;
+  text-align: center;
+}
+
 .top10Card{
   margin-top : 50px;
   margin-right : 65px;
   width: 72vw;
-  height: 240px;
+  height: 290px;
   background-color: rgb(255, 255, 255);
-  padding: 60px;
+  padding: 40px;
   border-radius: 20px;
   display: inline-block;
   vertical-align:top;
@@ -204,19 +217,50 @@
   border-radius: 20px;
   display: inline-block;
   flex-direction: column;
+  vertical-align:top;
+  position: relative;
+}
+.portfolioCard {
+  margin-top : 50px;
+  margin-right : 65px;
+  width: 1165px;
+  height: 480px;
+  background-color: rgb(255, 255, 255);
+  padding: 20px;
+  border-radius: 20px;
+  display: inline-block;
+  flex-direction: column;
+  vertical-align:top;
   position: relative;
 }
 
 .table {
   width: 100%;
+  margin-top : 0px;
+  margin-bottom : 20px;
   border-collapse: collapse;
   text-align: center;
+  vertical-align:top;
   border-radius : 8px;
   overflow: hidden;
 }
 .hTop10{
   margin-top: 0px;
   margin-bottom: 2px;
+}
+.hPortL{
+  float: left;
+  position:relative;
+  margin-top: 0px;
+  margin-bottom: 2px;
+  display: inline;
+}
+
+.hPortR{
+  position:relative;
+  margin-top: 0px;
+  margin-bottom: 2px;
+  
 }
 .td {
   font-size: 14px;
@@ -290,4 +334,29 @@
   right: 20px;
   border-radius: 20px;
   padding: 10px;
+}
+
+
+
+#customers {
+  font-family: Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+#customers td, #customers th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+#customers tr:nth-child(even){background-color: #f2f2f2;}
+
+#customers tr:hover {background-color: #ddd;}
+
+#customers th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #04AA6D;
+  color: white;
 }

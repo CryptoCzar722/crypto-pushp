@@ -1,8 +1,11 @@
 import React from 'react';
 import { useMoralis } from "react-moralis";
 import signOutStyle from "./styles/SignOut.module.css";
-import styles from "./styles/Home.module.css";
+//import styles from "./styles/Home.module.css";
 import { useEffect, useState } from "react";
+//
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 
 export const TopTen = () => {
@@ -13,14 +16,19 @@ export const TopTen = () => {
   const [balance,setBalance] = useState("");  
   const [dateUpdated, setDateUpdated] = useState("");
   const [top10, setTop10] = useState([]);
+  const [cardCoins, setCardCoins] = useState([]);
+  //const [card, setCard] = useState(0);
+  const [startDate, setStartDate] = useState(new Date());
 
   const queryTop10 = async ()=> {
     const query = new Moralis.Query("Top10");
     const top10 = await query.find();
-    const top10O = JSON.parse(top10[0].attributes.Top10)
-    setDateUpdated(top10[0].attributes.updatedAt.toString());
+    const top10O = JSON.parse(top10[top10.length-1].attributes.Top10)
+    setDateUpdated(top10[top10.length-1].attributes.updatedAt.toString());
     //console.log("top10-> ",top10O.result);
-    setTop10(top10O.result)
+    //setTop10(top10O.result)
+    setTop10(top10)
+    setCardCoins(top10O.result)
   }
 
   useEffect(() => {
@@ -30,7 +38,7 @@ export const TopTen = () => {
 
 
 const renderTableDataTop10 = () => {
-    return top10.map((top10, index) => {
+    return cardCoins.map((top10, index) => {
     const { circulation,marketCap,name,onedaychange,price,rank, sevendayschange,volume} = top10 //destructuring
       return (
           <tr className={signOutStyle.td}  key={rank}>
@@ -46,13 +54,29 @@ const renderTableDataTop10 = () => {
       )
     })
     }
+    const FindDate = (date) => { 
+      console.log(date.toString().slice(0,15)); 
+      top10.forEach(element =>{
+        //console.log("not found-> ",element.attributes.updatedAt.toString().slice(0,15))
+        if (date.toString().slice(0,15) == element.attributes.updatedAt.toString().slice(0,15))
+          {
+          //console.log("found new coins by date -> ",element.attributes.updatedAt.toString().slice(0,15))
+          //console.log("calendar newCoins-> ",element);
+          const top10O = JSON.parse(element.attributes.Top10)
+          setDateUpdated((element.attributes.updatedAt.toString()).toString());
+          setCardCoins(top10O.result)  
+        }
+      })
+      setStartDate(date)
+    }
     
   return ( 
     <div className={signOutStyle.top10Card}>
-      <h5 className= {signOutStyle.hTop10}> Top 10 </h5>
+      <div className={signOutStyle.divNewCoins}>Top 10 </div>
+      <DatePicker className={signOutStyle.calendar} selected={startDate} onChange={(date) => FindDate(date)} />
       <h5>{dateUpdated}</h5>
         <div>
-                <table className={signOutStyle.table}>
+                <table className={signOutStyle.table} >
                   <thead>
                     <tr>
                       <th>Rank</th>
