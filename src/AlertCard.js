@@ -30,7 +30,14 @@ export const AlertCard = () => {
     //fetchBalance();
     console.log("alert card is authenticated ->", isAuthenticated);
   }, []);
-
+/*
+<input
+              className= {signOutStyle.iAlert} //"form-control form-control-lg"
+              type="text"
+              placeholder={"Ticker/Contract Address"}
+              onChange={e => setAlertCoin(e.target.value.toUpperCase())} 
+              required />
+*/
   return ( 
     <div className={signOutStyle.alertCard}>
         <div className={signOutStyle.alertCardMini}>
@@ -39,12 +46,16 @@ export const AlertCard = () => {
             isAuthenticated 
             ?
             <>
-          <input
-              className= {signOutStyle.iAlert} //"form-control form-control-lg"
-              type="text"
-              placeholder={"Ticker/Contract Address"}
-              onChange={e => setAlertCoin(e.target.value.toUpperCase())} 
-              required />
+          <select  className={signOutStyle.sAlert} onChange ={ (event) => { setAlertCoinPercent(event.target.value) }}>
+                <option value="BTC">BTC</option>
+                <option value="ETH">ETH</option>
+                <option value="BNB">BNB</option>
+                <option value="SOL">SOL</option>
+                <option value="SOL">SOL</option>
+                <option value="USDC">USDC</option>
+                <option value="BUSD">BUSD</option>
+                <option value="USDT">USDT</option>
+          </select>
           <p className={signOutStyle.pAlert}>  Coin Selected : {/*alertCoin*/ isAuthenticated}</p> 
           <select  className={signOutStyle.sAlert} onChange ={ (event) => { setAlertCoinPercent(event.target.value) }}>
                 <option value="1">1%</option>

@@ -224,6 +224,16 @@ const renderTableDataPortfolio = () => {
       )
     })
     }
+
+
+    <div className={signOutStyle.chart}>
+              <TradingViewWidget
+                  symbol={"BINANCE:"+cardCoin.symbol+"USDT"}
+                  locale="fr"
+                  width = {500}
+                  height ={315}
+                />
+              </div>
 */
 
   return ( 
@@ -241,8 +251,8 @@ const renderTableDataPortfolio = () => {
                 {renderDropDataPortfolio()}
               </select>  
               <div>
-              <h5 align = "left" className= {signOutStyle.hPortL}>Address : </h5> 
-              <h5 className= {signOutStyle.hPortR}> {cardCoin.address}</h5> 
+              <span className= {signOutStyle.hPortL}>Address : </span> 
+              <span className= {signOutStyle.hPortR}> {cardCoin.address}</span> 
               </div>
               <hr
                 style={{
@@ -251,9 +261,9 @@ const renderTableDataPortfolio = () => {
                     height: 1
                 }}
             />
-            <div>
-              <h5 className= {signOutStyle.hPortL}>Balance : </h5> 
-              <h5 className= {signOutStyle.hPortR}> {cardCoin.name == "BUSD Token" ? "$" + cardCoin.balance: cardCoin.balance}</h5> 
+             <div>
+              <span className= {signOutStyle.hPortL}>Price : </span> 
+              <span className= {signOutStyle.hPortR}> {cardCoin.price}</span> 
             </div>  
             <hr
                 style={{
@@ -263,41 +273,33 @@ const renderTableDataPortfolio = () => {
                 }}
             />
             <div>
-              <h5 className= {signOutStyle.hPortL}>Price : </h5> 
-              <h5 className= {signOutStyle.hPortR}> {cardCoin.price}</h5> 
-            </div>  
-             
-              <hr
+              <span className= {signOutStyle.hPortL} >Token Balance : </span> 
+              <span className= {signOutStyle.hPortR} > {cardCoin.name == "BUSD Token" ? "$" + cardCoin.balance: cardCoin.balance}</span> 
+            </div>
+            <hr
                 style={{
                     color: "black",
                     backgroundColor: "black",
                     height: 1
                 }}
             />
-             <div>
-              <h5 className= {signOutStyle.hPortL}>Token Decimals : </h5> 
-              <h5 className= {signOutStyle.hPortR}> {cardCoin.decimals}</h5> 
-              </div>
-              <hr
+             <div className= {signOutStyle.hPortL}>
+              <span className= {signOutStyle.hPortL}>Token Decimals : </span> 
+              <span > {cardCoin.decimals}</span> 
+            </div>
+            <hr
                 style={{
                     color: "black",
                     backgroundColor: "black",
                     height: 1
                 }}
             />
-            <div>
-              <h5 className= {signOutStyle.hPortL}> Symbol : </h5> 
-              <h5 className= {signOutStyle.hPortR}> {cardCoin.symbol}</h5> 
-              </div>
+            <div  className= {signOutStyle.hPortL} >
+              <span className= {signOutStyle.hPortL}> Symbol : </span> 
+              <span > {cardCoin.symbol}</span> 
+            </div>
             </div> 
-            <div className={signOutStyle.chart}>
-              <TradingViewWidget
-                  symbol={"BINANCE:"+cardCoin.symbol+"USDT"}
-                  locale="fr"
-                  width = {500}
-                  height ={315}
-                />
-              </div>
+            
         </div>
         
         :

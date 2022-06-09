@@ -1,7 +1,7 @@
 .signOutCard {
   margin-top : 50px;
   margin-right : 65px;
-  width: 46vw;
+  width: 60%;
   height: 340px;
   background-color: rgb(255, 255, 255);
   padding: 20px;
@@ -14,7 +14,7 @@
 .alertCard {
   margin-top : 50px;
   margin-right : 65px;
-  width: 20vw;
+  width: 20%;
   height: 340px;
   background-color: rgb(255, 255, 255);
   padding: 20px;
@@ -27,11 +27,11 @@
 
 .alertCardMini {
   text-align: center;
-  margin-right : 15px;
-  margin-left : 20px;
+  margin-right : 10%;
+  margin-left : 10%;
   margin-top : 38px;
   margin-bottom : 0px;
-  width: 15vw;
+  width: 70%;
   height: 230px;
   background-image: linear-gradient(320deg, #1ac7fe,#ffffff);
   padding: 20px;
@@ -42,20 +42,17 @@
   position: relative;
 }
 
-.portfolioCardMini{
+.NewsCard {
   text-align: center;
-  margin-right : 30px;
-  margin-left : 20px;
-  margin-top : 38px;
-  margin-bottom : 0px;
-  width: 480px;
-  height: 230px;
-  background-image: linear-gradient(320deg, #1ac7fe,#ffffff);
-  padding: 20px;
+  margin-top : 50px;
+  width: 40%;
+  height: 100%;
+  background-color: rgb(255, 255, 255);
+  padding: 10px;
   border-radius: 20px;
   display: inline-block;
+  flex-direction: column;
   vertical-align:top;
-  flex-direction: row;
   position: relative;
 }
 
@@ -68,6 +65,10 @@
 .hAlert {
   margin-top : 0px;
   margin-bottom : 3px;
+}
+.hNews {
+  margin-top : 10px;
+  margin-bottom : 10px;
 }
 
 .iError{
@@ -141,9 +142,8 @@
 
 .top10Card{
   margin-top : 50px;
-  margin-right : 65px;
-  width: 72vw;
-  height: 290px;
+  width: 100%;
+  height: 100%;
   background-color: rgb(255, 255, 255);
   padding: 40px;
   border-radius: 20px;
@@ -184,8 +184,8 @@
 .gainersCard {
   margin-top : 50px;
   margin-bottom : 100px;
-  margin-right : 75px;
-  width: 32vw;
+  margin-right : 5%;
+  width: 38%;
   height: 300px;
   background-color: rgb(255, 255, 255);
   padding: 40px;
@@ -220,18 +220,36 @@
   vertical-align:top;
   position: relative;
 }
+.portfolioCardMini{
+  text-align: center;
+  margin-right : 60px;
+  margin-left : 30px;
+  margin-top : 0px;
+  margin-bottom : 20px;
+  width: 80%;
+  height: 100%;
+  background-image: linear-gradient(320deg, #1ac7fe,#ffffff);
+  padding: 20px;
+  border-radius: 20px;
+  display: inline-block;
+  vertical-align:top;
+  flex-direction: row;
+  position: relative;
+}
+
 .portfolioCard {
   margin-top : 50px;
   margin-right : 65px;
-  width: 1165px;
-  height: 480px;
+  width: 40%;
+  height: 100%;
   background-color: rgb(255, 255, 255);
-  padding: 20px;
+  padding: 40px;
   border-radius: 20px;
   display: inline-block;
   flex-direction: column;
   vertical-align:top;
   position: relative;
+  text-align: center;
 }
 
 .table {
@@ -241,15 +259,22 @@
   border-collapse: collapse;
   text-align: center;
   vertical-align:top;
-  border-radius : 8px;
+  border-radius : 0px;
   overflow: hidden;
 }
 .hTop10{
   margin-top: 0px;
-  margin-bottom: 2px;
+  margin-bottom: 10px;
+}
+.divPort{
+  display: inline-block;
 }
 .hPortL{
+  overflow: hidden;
+  flex-direction: row;
   float: left;
+  vertical-align:top;
+  width : 100%;
   position:relative;
   margin-top: 0px;
   margin-bottom: 2px;
@@ -257,10 +282,14 @@
 }
 
 .hPortR{
+  overflow: hidden;
+  flex-direction: row;
+  margin-right : 0px;
+  display: inline;
+  vertical-align:top;
   position:relative;
   margin-top: 0px;
   margin-bottom: 2px;
-  
 }
 .td {
   font-size: 14px;

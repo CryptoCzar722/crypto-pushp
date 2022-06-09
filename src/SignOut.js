@@ -13,6 +13,7 @@ import { NewCoinCard } from './NewCoinCard';
 import { PortFolioCard } from './PortFolioCard';
 import { TopGainers } from './TopGainers';
 import { TopLosers } from './TopLosers';
+import { NewsCard } from './NewsCard';
 //must be last import
 //const axios = require("axios");
 
@@ -51,6 +52,7 @@ export const SignOut = () => {
         <AlertCard/>
       </div>
       <PortFolioCard/>
+      <NewsCard/>
       <div>
         <TopTen/>
       </div>
