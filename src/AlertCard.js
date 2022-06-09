@@ -46,7 +46,7 @@ export const AlertCard = () => {
             isAuthenticated 
             ?
             <>
-          <select  className={signOutStyle.sAlert} onChange ={ (event) => { setAlertCoinPercent(event.target.value) }}>
+          <select  className={signOutStyle.sAlert} onChange ={ (event) => { setAlertCoin(event.target.value) }}>
                 <option value="BTC">BTC</option>
                 <option value="ETH">ETH</option>
                 <option value="BNB">BNB</option>
@@ -56,7 +56,7 @@ export const AlertCard = () => {
                 <option value="BUSD">BUSD</option>
                 <option value="USDT">USDT</option>
           </select>
-          <p className={signOutStyle.pAlert}>  Coin Selected : {/*alertCoin*/ isAuthenticated}</p> 
+          <p className={signOutStyle.pAlert}>  Coin Selected : {alertCoin}</p> 
           <select  className={signOutStyle.sAlert} onChange ={ (event) => { setAlertCoinPercent(event.target.value) }}>
                 <option value="1">1%</option>
                 <option value="5">5%</option>
