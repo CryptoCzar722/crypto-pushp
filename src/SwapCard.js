@@ -7,6 +7,9 @@ import { useEffect, useState } from "react";
 //must be last import
 //const axios = require("axios");
 import TradingViewWidget from 'react-tradingview-widget';
+import { TechnicalAnalysis } from "react-ts-tradingview-widgets";
+//import { AdvancedRealTimeChart } from "react-ts-tradingview-widgets";
+
 
 export const SwapCard = () => {
   
@@ -34,7 +37,8 @@ export const SwapCard = () => {
   const [swapCoinOut, setSwapCoinOut] = useState("BNB");
   const [orderExchange,setOrderExchange] = useState("PancakeSwap");
   const [limitPrice,setLimitPrice] = useState("1");
-  
+  const [dataViewer,setDataViewer] = useState("chart");
+
   const fetchBalance = async () => {
     try {
       //tag 
@@ -111,12 +115,28 @@ return (
           } 
     </div>
     <div className={signOutStyle.chart}>
-      <TradingViewWidget
+    <select  className={signOutStyle.sSwapData} onChange ={ (event) => { setDataViewer(event.target.value) }}>
+            <option value="chart">Chart</option>
+            <option value="ta">TA Insight</option>
+    </select>
+    {
+      dataViewer === "chart" ? 
+    <TradingViewWidget
         symbol={"BINANCE:"+swapCoinOut+"BUSD"}
-        locale="fr"
+        locale="en"
         width = {500}
         height ={315}
       />
+      :
+      <TechnicalAnalysis 
+      symbol={"BINANCE:"+swapCoinOut+"BUSD"}
+      locale="en"
+      colorTheme="light" 
+      width = {500}
+      height ={250}
+        >
+      </TechnicalAnalysis>
+    }
     </div>
     </div>
 </div>
@@ -125,12 +145,26 @@ return (
 };
 
   /*
+    <TradingViewWidget
+        symbol={"BINANCE:"+swapCoinOut+"BUSD"}
+        locale="fr"
+        width = {500}
+        height ={315}
+      />
   <TradingViewWidget
         symbol={"BINANCE:"+swapCoin+"BUSD"}
         locale="fr"
         width = {500}
         height ={175}
       />
+
+      <AdvancedRealTimeChart 
+    theme="dark" 
+    symbol={"BINANCE:"+swapCoinOut+"BUSD"}
+    locale="fr"
+    width = {500}
+    height ={315}
+    />
 
     <div>
       <div>

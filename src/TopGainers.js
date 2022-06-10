@@ -16,12 +16,15 @@ export const TopGainers = () => {
   const [recentGainers, setRecentGainers] = useState([]);
   const [cardCoins, setCardCoins] = useState([]);
   const [startDate, setStartDate] = useState(new Date());
+  const [firstData, setFirstData] = useState(new Date());
 
   const queryRecentGainers = async ()=> {
     const query = new Moralis.Query("TopGainers");
     const topGs = await query.find();
     const topGsO = JSON.parse(topGs[topGs.length -1].attributes.TopGainers)
     setDateUpdated(new Date(topGs[topGs.length -1].attributes.updatedAt.toString()).toString());
+    setFirstData(new Date(topGs[0].attributes.updatedAt.toString()).toString().slice(0,15));
+    console.log((topGs[0].attributes.updatedAt.toString()).toString().slice(0,15));
     //console.log("topGs-> ",topGsO.result);
     //setRecentGainers(topGsO.result)
     setCardCoins(topGsO.result)
@@ -59,14 +62,19 @@ export const TopGainers = () => {
           const topGsO = JSON.parse(element.attributes.TopGainers)
           setDateUpdated((element.attributes.updatedAt.toString()).toString());
           setCardCoins(topGsO.result)  
+          setStartDate(date)
         }
       })
-      setStartDate(date)
     }
   return ( 
     <div className={signOutStyle.gainersCard}>
           <div className={signOutStyle.divNewCoins}>Biggest Gainers </div>
-          <DatePicker className={signOutStyle.calendar} selected={startDate} onChange={(date) => FindDate(date)} />
+          <DatePicker 
+          className={signOutStyle.calendar} 
+          startDate = {new Date(firstData)}
+          endDate = {new Date(startDate)}
+          selected={startDate}
+          onChange={(date) => FindDate(date)} />
           <h5>{dateUpdated}</h5>
           <div>
             <table className={signOutStyle.table}>

@@ -11,7 +11,7 @@ Moralis.Cloud.job("UpdateRecentCoinStats", (request) =>{
     url: 'https://fear-and-greed-index.p.rapidapi.com/v1/fgi',
     headers: {
           'X-RapidAPI-Host': 'fear-and-greed-index.p.rapidapi.com',
-          'X-RapidAPI-Key': ''
+          'X-RapidAPI-Key': '66e37566f8msh8557ee0e5e8cd8fp1993d2jsn76de980f73f3'
     }
    }).then(function(httpResponse) {
       logger.info(httpResponse.text);
@@ -30,7 +30,7 @@ Moralis.Cloud.job("UpdateRecentCoinStats", (request) =>{
     url: 'https://crypto-tracker.p.rapidapi.com/api/recentlyadded',
     headers: {
           'X-RapidAPI-Host': 'crypto-tracker.p.rapidapi.com',
-        'X-RapidAPI-Key': ''
+        'X-RapidAPI-Key': '66e37566f8msh8557ee0e5e8cd8fp1993d2jsn76de980f73f3'
         }
    }).then(function(httpResponse) {
       logger.info(httpResponse.text);
@@ -50,7 +50,7 @@ Moralis.Cloud.job("UpdateRecentCoinStats", (request) =>{
     url: 'https://crypto-tracker.p.rapidapi.com/api/toplosers',
     headers: {
           'X-RapidAPI-Host': 'crypto-tracker.p.rapidapi.com',
-        'X-RapidAPI-Key': ''
+        'X-RapidAPI-Key': '66e37566f8msh8557ee0e5e8cd8fp1993d2jsn76de980f73f3'
         }
    }).then(function(httpResponse) {
       logger.info(httpResponse.text);
@@ -69,7 +69,7 @@ Moralis.Cloud.job("UpdateRecentCoinStats", (request) =>{
     url: 'https://crypto-tracker.p.rapidapi.com/api/topgainers',
     headers: {
           'X-RapidAPI-Host': 'crypto-tracker.p.rapidapi.com',
-        'X-RapidAPI-Key': ''
+        'X-RapidAPI-Key': '66e37566f8msh8557ee0e5e8cd8fp1993d2jsn76de980f73f3'
         }
    }).then(function(httpResponse) {
       logger.info(httpResponse.text);
@@ -89,7 +89,7 @@ Moralis.Cloud.job("UpdateRecentCoinStats", (request) =>{
     url: 'https://crypto-tracker.p.rapidapi.com/api/top10',
     headers: {
           'X-RapidAPI-Host': 'crypto-tracker.p.rapidapi.com',
-        'X-RapidAPI-Key': ''
+        'X-RapidAPI-Key': '66e37566f8msh8557ee0e5e8cd8fp1993d2jsn76de980f73f3'
         }
    }).then(function(httpResponse) {
       logger.info(httpResponse.text);
@@ -104,6 +104,7 @@ Moralis.Cloud.job("UpdateRecentCoinStats", (request) =>{
     });
 });
 
+
 //Trading bot functions
 Moralis.Cloud.beforeSave("Trades", async (request) =>{
       const logger = Moralis.Cloud.getLogger();
@@ -114,7 +115,7 @@ Moralis.Cloud.beforeSave("Trades", async (request) =>{
   
       let msg = `new buy ${token} coinage ${amount} for $5`;
       let data = {
-         app_id: "",	//From OneSignal
+         app_id: "e8508aaf-3823-4991-a09b-6d1bba197d1a",	//From OneSignal
         contents: {"en": msg},
         included_segments: ["Subscribed Users"], //Array of OneSignal Segements you wish to send sms to
         name: "SMS",
@@ -127,9 +128,39 @@ Moralis.Cloud.beforeSave("Trades", async (request) =>{
     body: data,
     headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Basic ' //Add Rest API Key from OneSignal
+        'Authorization': 'Basic OTViZWI5ZWItMWM5YS00MWRhLTkwMzMtM2JiZTdiNzU0MjJk' //Add Rest API Key from OneSignal
         }
    }) 
+})
+
+
+//Trading bot functions
+Moralis.Cloud.beforeSave("NewAlertSet", async (request) =>{
+  const logger = Moralis.Cloud.getLogger();
+
+  const coin      = request.object.get("coin");
+  const percent   = request.object.get("percent");
+  const direction = request.object.get("direction");
+  const phone     = request.object.get("phone");
+
+  let msg = `New alert set for ${coin} @ ${percent}% change ${direction}`;
+  let data = {
+     app_id: "e8508aaf-3823-4991-a09b-6d1bba197d1a",	//From OneSignal
+    contents: {"en": msg},
+    included_segments: ["Subscribed Users"], //Array of OneSignal Segements you wish to send sms to
+    name: "SMS",
+      sms_from: "+16077032996" //Your from SMS set up in Twilio
+    }    
+    //SMS post
+Moralis.Cloud.httpRequest({
+   method: "POST",
+url: "https://onesignal.com/api/v1/notifications",
+body: data,
+headers: {
+    'Content-Type': 'application/json',
+    'Authorization': 'Basic OTViZWI5ZWItMWM5YS00MWRhLTkwMzMtM2JiZTdiNzU0MjJk' //Add Rest API Key from OneSignal
+    }
+}) 
 })
 
 
