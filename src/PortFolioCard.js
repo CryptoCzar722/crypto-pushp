@@ -274,7 +274,7 @@ const renderTableDataPortfolio = () => {
             />
             <div>
               <span className= {signOutStyle.hPortL} >Token Balance : </span> 
-              <span className= {signOutStyle.hPortR} > {cardCoin.name == "BUSD Token" ? "$" + cardCoin.balance: cardCoin.balance}</span> 
+              <span className= {signOutStyle.hPortR} > {cardCoin.name == "BUSD Token" ? "$" + cardCoin.balance : (cardCoin.balance+cardCoin.name +' = '+ '$'+cardCoin.price * cardCoin.balance)} </span> 
             </div>
             <hr
                 style={{

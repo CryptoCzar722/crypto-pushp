@@ -5,9 +5,14 @@ import styles from "./styles/Home.module.css";
 import { useEffect, useState } from "react";
 import { FaBan } from 'react-icons/fa';
 
+
+const axios = require("axios");
+
 export const AlertCard = () => {
   
   //application data
+  
+
   const { isAuthenticated, logout, Moralis, user, ethAddress } = useMoralis();
   
   const [alertCoin, setAlertCoin] = useState("BTC");
@@ -25,6 +30,21 @@ export const AlertCard = () => {
       setBalance(balance.balance / 10 ** 18);
     } catch {}
   };
+
+  const saveAlert = async () =>{
+
+      const Alert = Moralis.Object.extend("Alert");
+      const alert = new Alert();
+      alert.set("phone_number", phoneNumber);
+      alert.set("coin", alertCoin);
+      alert.set("percent", alertCoinPercent);
+      alert.set("direction", alertDirection);
+      await alert.save().then(()=>{
+        //alert.show("Alert saved you will received a text shortly!");
+      });
+
+    
+  }
   
   useEffect(() => {
     //fetchBalance();
@@ -76,7 +96,7 @@ export const AlertCard = () => {
               placeholder={"+1XXXXXXXXXX"}
               onChange={e => setPhoneNumber(e.target.value.toUpperCase())} 
               required />
-              <button className={styles.alertButton} onClick={logout}>
+              <button className={styles.alertButton} onClick={saveAlert}>
               Set Alert
               </button>
               </>
