@@ -3,6 +3,7 @@ import { useMoralis } from "react-moralis";
 import signOutStyle from "./styles/SignOut.module.css";
 import styles from "./styles/Home.module.css";
 import { useEffect, useState } from "react";
+import {isMobile} from 'react-device-detect';
 
 //must be last import
 //const axios = require("axios");
@@ -114,6 +115,8 @@ return (
 
           } 
     </div>
+    {
+      isMobile ? <></> : 
     <div className={signOutStyle.chart}>
     <select  className={signOutStyle.sSwapData} onChange ={ (event) => { setDataViewer(event.target.value) }}>
             <option value="chart">Chart</option>
@@ -138,6 +141,7 @@ return (
       </TechnicalAnalysis>
     }
     </div>
+    }
     </div>
 </div>
 

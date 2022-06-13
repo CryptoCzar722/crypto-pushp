@@ -93,14 +93,7 @@ const renderTableData = () => {
     })
     setStartDate(date)
   }
-  /*
-  <button className={styles.newcoinArrowButtonR}  onClick={() => {updateCardData()  }}>
-            {"<"}
-      </button>
-      <button className={styles.newcoinArrowButtonL}  onClick={() => { updateCardDataDown() }}>
-                  {">"}
-      </button>
-  */
+  
   return ( 
     <div className={signOutStyle.medCard}>
     <div className={signOutStyle.divNewCoins}>New Projects</div>

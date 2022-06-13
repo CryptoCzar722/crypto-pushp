@@ -7,11 +7,13 @@ import SignIn from "./SignIn";
 import { SignOut } from "./SignOut";
 import  AlertsApp  from "./AlertsApp";
 import styles from "./styles/Home.module.css";
+import {isMobile} from 'react-device-detect';
 
 function App() {
   return (
     <MoralisProvider serverUrl="https://tmplbudfhggp.usemoralis.com:2053/server" appId="zciDyDJrxgyMjOVHmbUo7IE8xtqxswlwZshrJRaz"> 
-      <div className={styles.divBack} ><h1 className={styles.hNav}>Crypto-Push</h1>
+      <div className={styles.divBack} >
+        <h1 className={styles.hNav}>Crypto-Push {isMobile.toString() }</h1>
       </div>
       <AlertsApp/>
     </MoralisProvider>

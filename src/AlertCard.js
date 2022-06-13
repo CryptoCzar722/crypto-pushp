@@ -6,8 +6,6 @@ import { useEffect, useState } from "react";
 import { FaBan } from 'react-icons/fa';
 
 
-const axios = require("axios");
-
 export const AlertCard = () => {
   
   //application data

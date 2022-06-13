@@ -49,9 +49,13 @@ export const SignOut = () => {
     <div>
       <div>
         <SwapCard/>
+      </div>
+      <div>
         <AlertCard/>
       </div>
+      
       <PortFolioCard/>
+      
       <NewsCard/>
       <div>
         <TopTen/>
@@ -64,6 +68,10 @@ export const SignOut = () => {
         <TopLosers/>
         <TopGainers/>
       </div>
+      <head>
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5207386972290577">
+        </script>
+     </head>
     </div>
   );
 };

@@ -65,7 +65,7 @@ export const TopLosers = () => {
       setStartDate(date)
     }
   return ( 
-    <div className={signOutStyle.gainersCard}>
+    <div className={signOutStyle.losersCard}>
           <div className={signOutStyle.divNewCoins}>Biggest Losers </div>
           <DatePicker className={signOutStyle.calendar} selected={startDate} onChange={(date) => FindDate(date)} />
           <h5>{dateUpdated}</h5>
