@@ -16,13 +16,14 @@ export const TopLosers = () => {
   const [cardCoins, setCardCoins] = useState([]);
   const [card, setCard] = useState(0);
   const [startDate, setStartDate] = useState(new Date());
-
+  const [firstData, setFirstData] = useState(new Date());
   
   const queryRecentLosers = async ()=> {
     const query = new Moralis.Query("TopLosers");
     const topLs = await query.find();
     const topLsO = JSON.parse(topLs[topLs.length-1].attributes.TopLosers)
     setDateUpdated(new Date(topLs[topLs.length-1].attributes.updatedAt.toString()).toString());
+    setFirstData(new Date(topLs[0].attributes.updatedAt.toString()).toString().slice(0,15));
     //console.log("topLs-> ",topLsO.result);
     //setRecentLosers(topLsO.result)
     setCardCoins(topLsO.result)
@@ -60,14 +61,19 @@ export const TopLosers = () => {
           const topLsO = JSON.parse(element.attributes.TopLosers)
           setDateUpdated((element.attributes.updatedAt.toString()).toString());
           setCardCoins(topLsO.result)  
+          setStartDate(date)
         }
       })
-      setStartDate(date)
     }
   return ( 
     <div className={signOutStyle.losersCard}>
           <div className={signOutStyle.divNewCoins}>Biggest Losers </div>
-          <DatePicker className={signOutStyle.calendar} selected={startDate} onChange={(date) => FindDate(date)} />
+          <DatePicker 
+          className={signOutStyle.calendar} 
+          selected={startDate} 
+          startDate = {new Date(firstData)}
+          endDate = {new Date(startDate)}
+          onChange={(date) => FindDate(date)} />
           <h5>{dateUpdated}</h5>
           <div>
             <table className={signOutStyle.table}>

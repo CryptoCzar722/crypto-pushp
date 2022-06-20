@@ -3,14 +3,12 @@ import { useMoralis } from "react-moralis";
 import signOutStyle from "./styles/SignOut.module.css";
 import styles from "./styles/Home.module.css";
 import { useEffect, useState } from "react";
-import {isMobile} from 'react-device-detect';
-
 //must be last import
 //const axios = require("axios");
 import TradingViewWidget from 'react-tradingview-widget';
 import { TechnicalAnalysis } from "react-ts-tradingview-widgets";
 //import { AdvancedRealTimeChart } from "react-ts-tradingview-widgets";
-
+import { BrowserView, MobileView, isBrowser, isMobile } from 'react-device-detect';
 
 export const SwapCard = () => {
   
@@ -59,7 +57,7 @@ export const SwapCard = () => {
 //<p className={signOutStyle.pAlert}> Order Type : {orderType} </p>
   
 return ( 
-    <div className={signOutStyle.signOutCard}>
+    <div className={isMobile == false ? signOutStyle.signOutCard : signOutStyle.signOutCardMobile}>
     <div>
     <div className={signOutStyle.swapCardMini}>
       <h4 className={signOutStyle.hAlert}> Swap </h4>

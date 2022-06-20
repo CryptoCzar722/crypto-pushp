@@ -7,15 +7,68 @@ import SignIn from "./SignIn";
 import { SignOut } from "./SignOut";
 import  AlertsApp  from "./AlertsApp";
 import styles from "./styles/Home.module.css";
-import {isMobile} from 'react-device-detect';
+import { BrowserView, MobileView, isBrowser, isMobile } from 'react-device-detect';
+import { TickerTape } from "react-ts-tradingview-widgets";
 
-function App() {
-  return (
-    <MoralisProvider serverUrl="https://tmplbudfhggp.usemoralis.com:2053/server" appId="zciDyDJrxgyMjOVHmbUo7IE8xtqxswlwZshrJRaz"> 
+import Header  from './Header';
+import { SwapCard } from "./SwapCard";
+import { AlertCard } from "./AlertCard";
+import { TopTen } from './TopTen';
+import { FearCard } from './FearCard';
+import { NewCoinCard } from './NewCoinCard';
+import { PortFolioCard } from './PortFolioCard';
+import { TopGainers } from './TopGainers';
+import { TopLosers } from './TopLosers';
+import { NewsCard } from './NewsCard';
+
+/*
       <div className={styles.divBack} >
         <h1 className={styles.hNav}>Crypto-Push {isMobile.toString() }</h1>
       </div>
-      <AlertsApp/>
+*/
+function App() {
+  //console.log("process.env ",process.env)
+  const [pageState, setPageState] = useState("dex");
+  const tickerSymbols = [
+    {
+      "proName": "BINANCE:BTCBUSD",
+      "title": "BTC/BUSD"
+    },
+    {
+      "proName": "BINANCE:ETHBUSD",
+      "title": "ETH/BUSD"
+    },
+    {
+      "proName": "BINANCE:SOLBUSD",
+      "title": "SOL/BUSD"
+    },
+    {
+      "proName": "BINANCE:ADABUSD",
+      "title": "ADA/BUSD"
+    },
+    {
+      "proName": "BINANCE:BNBBUSD",
+      "title": "BNB/BUSD"
+    }
+  ];
+  return (
+    <MoralisProvider serverUrl="https://tmplbudfhggp.usemoralis.com:2053/server" appId="zciDyDJrxgyMjOVHmbUo7IE8xtqxswlwZshrJRaz"> 
+        <TickerTape 
+        symbols = {tickerSymbols}
+        colorTheme="light"
+        ></TickerTape>
+        <div>{pageState}</div>
+        <Header page = {pageState} setpage = {setPageState}  />
+        
+        {
+        pageState == "DEX" ?
+          <SwapCard/>:
+        pageState == "news" ? 
+          <NewsCard/> :
+        pageState == "settings" ?    
+          <AlertsApp/> :
+          <AlertsApp/> 
+        }
     </MoralisProvider>
   );
 }

@@ -16,6 +16,7 @@ export const NewCoinCard = () => {
   const [cardCoins, setCardCoins] = useState([]);
   const [card, setCard] = useState(0);
   const [startDate, setStartDate] = useState(new Date());
+  const [firstData, setFirstData] = useState(new Date());
 
   const queryRecentCoins = async ()=> {
     const query = new Moralis.Query("NewCoins");
@@ -24,6 +25,7 @@ export const NewCoinCard = () => {
     const newCoinsO = JSON.parse(newCoins[newCoins.length-1].attributes.NewCoins)
     //console.log("newCoins-> ",newCoins[newCoins.length-1]);
     setDateUpdated((newCoins[newCoins.length-1].attributes.updatedAt.toString()).toString());
+    setFirstData(new Date(newCoins[0].attributes.updatedAt.toString()).toString().slice(0,15));
     setCardCoins(newCoinsO.result)
     setRecentCoins(newCoins)
   }
@@ -89,15 +91,20 @@ const renderTableData = () => {
         const newCoinsO = JSON.parse(element.attributes.NewCoins)
         setDateUpdated((element.attributes.updatedAt.toString()).toString());
         setCardCoins(newCoinsO.result)  
+        setStartDate(date)
       }
     })
-    setStartDate(date)
   }
   
   return ( 
     <div className={signOutStyle.medCard}>
     <div className={signOutStyle.divNewCoins}>New Projects</div>
-      <DatePicker className={signOutStyle.calendar} selected={startDate} onChange={(date) => FindDate(date)} />
+      <DatePicker 
+      className={signOutStyle.calendar} 
+      selected={startDate} 
+      startDate = {new Date(firstData)}
+      endDate = {new Date(startDate)}
+      onChange={(date) => FindDate(date)} />
       <h5 className={styles.hNewCoin}>{dateUpdated} </h5>
           <div>
             <table className={signOutStyle.table}>

@@ -19,12 +19,14 @@ export const FearCard = () => {
   const [greedText, setGreedText] = useState(0);
   const [dateUpdated, setDateUpdated] = useState("");
   const [startDate, setStartDate] = useState(new Date());
+  const [firstData, setFirstData] = useState(new Date());
 
   const queryFnG = async ()=> {
     const query = new Moralis.Query("FearGreed");
     const fng = await query.find();
     const fngO = JSON.parse(fng[fng.length -1].attributes.FearGreed)
     setDateUpdated(new Date(fng[fng.length -1].attributes.updatedAt.toString()).toString());
+    setFirstData(new Date(fng[0].attributes.updatedAt.toString()).toString().slice(0,15));
     //console.log("FearGreed-> ", fngO.fgi.now.value);
     setGreedCard(fng);
     setGreed(fngO.fgi.now.value)
@@ -48,15 +50,20 @@ export const FearCard = () => {
         setGreed(fng0.fgi.now.value)
         setGreedText(fng0.fgi.now.valueText)
         //setCardCoins(topLsO.result)  
+        setStartDate(date)
       }
     })
-    setStartDate(date)
   }
 
   return ( 
     <div className={signOutStyle.smallCard}>
           <div className={signOutStyle.divNewCoins}>Fear&Greed Index</div>
-          <DatePicker className={signOutStyle.calendar} selected={startDate} onChange={(date) => FindDate(date)} />
+          <DatePicker 
+          className={signOutStyle.calendar} 
+          startDate = {new Date(firstData)}
+          endDate = {new Date(startDate)}
+          selected={startDate} 
+          onChange={(date) => FindDate(date)} />
           <h5>{dateUpdated}</h5>
           <p>{greedText}</p>
           <ReactSpeedometer

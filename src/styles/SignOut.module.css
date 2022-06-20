@@ -382,33 +382,13 @@
   border-radius: 20px;
   padding: 10px;
 }
-
-@media screen and (max-width : 400){
-  .alertCard{
-    float:none
-  }
-  .signOutCard{
-    float:none
-  }
-
-  .signOutCard {
-    margin-top : 10px;
-    margin-bottom : 10px;
-    max-width: 60%;
-    height: 340px;
-    background-color: rgb(160, 43, 43);
-    padding: 20px;
-    border-radius: 20px;
-    display: block;
-  }
-  
-  .alertCard {
-    margin-top : 10px;
-    width: 20%;
-    height: 340px;
-    background-color: rgb(255, 255, 255);
-    padding: 20px;
-    border-radius: 20px;
-    display: block;
-  }
+ 
+.signOutCardMobile {
+  max-width: 60%;
+  max-height: 60%;
+  background-color: rgb(255, 255, 255);
+  float : center;
+  border-radius: 20px;
+  display: block;
 }
+
