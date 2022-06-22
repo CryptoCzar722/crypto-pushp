@@ -26,6 +26,10 @@ import { NewsCard } from './NewsCard';
         <h1 className={styles.hNav}>Crypto-Push {isMobile.toString() }</h1>
       </div>
 */
+//fix later
+//<div>{pageState}</div>
+//<Header page = {pageState} setpage = {setPageState}  />
+
 function App() {
   //console.log("process.env ",process.env)
   const [pageState, setPageState] = useState("dex");
@@ -57,8 +61,6 @@ function App() {
         symbols = {tickerSymbols}
         colorTheme="light"
         ></TickerTape>
-        <div>{pageState}</div>
-        <Header page = {pageState} setpage = {setPageState}  />
         
         {
         pageState == "DEX" ?

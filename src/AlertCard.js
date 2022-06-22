@@ -14,7 +14,9 @@ export const AlertCard = () => {
   const { isAuthenticated, logout, Moralis, user, ethAddress } = useMoralis();
   
   const [alertCoin, setAlertCoin] = useState("BTC");
+  const [alertType, setAlertType] = useState("percent");
   const [alertCoinPercent, setAlertCoinPercent] = useState("None");
+  const [alertCoinPrice, setAlertCoinPrice] = useState("None");
   const [alertDirection, setAlertDirection] = useState("None");
   const [phoneNumber,setPhoneNumber] = useState("");
   const [balance,setBalance] = useState("");  
@@ -30,7 +32,7 @@ export const AlertCard = () => {
   };
 
   const saveAlert = async () =>{
-
+      
       const Alert = Moralis.Object.extend("Alert");
       const alert = new Alert();
       alert.set("phone_number", phoneNumber);
@@ -43,9 +45,27 @@ export const AlertCard = () => {
 
     
   }
-  
+
+  const fetchPrices = async (coin) => {
+    setAlertCoin(coin) 
+    let coinStringClass = "";
+    if (coin == "BTC"){
+      coinStringClass = "btc_price_stats";
+    }
+    else if (coin == "ETH"){
+      coinStringClass = "eth_price_stats";
+    }
+    const query = new Moralis.Query(coinStringClass);
+    const statsCount = await query.count();
+    query.limit(statsCount);
+    const stats = await query.find({ useMasterKey: true });
+    const stats_old_price = stats[stats.length - 1].attributes.price / 1;
+    console.log("Most recent BTC price = ",stats_old_price)
+    setAlertCoinPrice(parseFloat(stats_old_price).toFixed(2))
+  }
+
   useEffect(() => {
-    //fetchBalance();
+    fetchPrices("BTC");
     console.log("alert card is authenticated ->", isAuthenticated);
   }, []);
 /*
@@ -55,16 +75,27 @@ export const AlertCard = () => {
               placeholder={"Ticker/Contract Address"}
               onChange={e => setAlertCoin(e.target.value.toUpperCase())} 
               required />
+
+<p className={signOutStyle.pAlert}>    Coin Selected : {alertCoin}</p>
 */
   return ( 
     <div className={signOutStyle.alertCard}>
+      <select  className={signOutStyle.sAlertType} onChange ={ (event) => { 
+            setAlertType(event.target.value) 
+            }}>
+                <option value="percent">Percent</option>
+                <option value="price">Price</option>
+          </select>
         <div className={signOutStyle.alertCardMini}>
         <h4 className={signOutStyle.hAlert}> Text Alerts </h4>
           {
             isAuthenticated 
             ?
             <>
-          <select  className={signOutStyle.sAlert} onChange ={ (event) => { setAlertCoin(event.target.value) }}>
+          <select  className={signOutStyle.sAlert} onChange ={ (event) => { 
+            //setAlertCoin(event.target.value) 
+            fetchPrices(event.target.value)
+            }}>
                 <option value="BTC">BTC</option>
                 <option value="ETH">ETH</option>
                 <option value="BNB">BNB</option>
@@ -74,7 +105,7 @@ export const AlertCard = () => {
                 <option value="BUSD">BUSD</option>
                 <option value="USDT">USDT</option>
           </select>
-          <p className={signOutStyle.pAlert}>  Coin Selected : {alertCoin}</p> 
+          <p className={signOutStyle.pAlert}>    Currnet price : ${alertCoinPrice}</p> 
           <select  className={signOutStyle.sAlert} onChange ={ (event) => { setAlertCoinPercent(event.target.value) }}>
                 <option value="1">1%</option>
                 <option value="5">5%</option>

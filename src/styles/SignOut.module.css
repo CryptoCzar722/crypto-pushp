@@ -129,6 +129,12 @@
   border-radius: 50px;
   text-align: center;
 }
+.sAlertType {
+  height: 25px;
+  width: 150px;
+  text-align: center;
+}
+
 .sAlert {
   height: 25px;
   width: 150px;
