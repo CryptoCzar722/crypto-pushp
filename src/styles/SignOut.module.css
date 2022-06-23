@@ -1,5 +1,6 @@
 .signOutCard {
-  margin-top : 50px;
+  margin-top    : 100px;
+  margin-bottom : 250px;
   max-width: 60vw;
   height: 340px;
   background-color: rgb(255, 255, 255);
@@ -11,7 +12,9 @@
 }
 
 .alertCard {
+  position: fixed;
   margin-top : 50px;
+  margin-bottom : 250px;
   min-width: 20%;
   height: 340px;
   background-color: rgb(255, 255, 255);
@@ -24,6 +27,7 @@
 }
 
 .alertCardMini {
+  position: fixed;
   text-align: center;
   margin-right : 10%;
   margin-left : 10%;
@@ -42,6 +46,7 @@
 .NewsCard {
   text-align: center;
   margin-top : 50px;
+  margin-bottom : 150px;
   min-width: 600px;
   min-height: 70%;
   background-color: rgb(255, 255, 255);
@@ -262,10 +267,11 @@
 }
 
 .portfolioCard {
-  margin-top : 50px;
+  margin-top : 38px;
+  margin-bottom : 150px;
   margin-right : 5px;
   min-width: 50%;
-  min-height: 70%;
+  min-height: 50%;
   background-color: rgb(255, 255, 255);
   padding: 40px;
   border-radius: 20px;

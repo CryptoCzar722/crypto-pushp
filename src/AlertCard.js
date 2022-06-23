@@ -65,6 +65,7 @@ export const AlertCard = () => {
   }
 
   useEffect(() => {
+    Moralis.start({"appId" : "zciDyDJrxgyMjOVHmbUo7IE8xtqxswlwZshrJRaz","serverUrl" : "https://tmplbudfhggp.usemoralis.com:2053/server"});
     fetchPrices("BTC");
     console.log("alert card is authenticated ->", isAuthenticated);
   }, []);
@@ -77,6 +78,14 @@ export const AlertCard = () => {
               required />
 
 <p className={signOutStyle.pAlert}>    Coin Selected : {alertCoin}</p>
+*/
+/*
+//next coins for alerts
+                <option value="SOL">SOL</option>
+                <option value="SOL">SOL</option>
+                <option value="USDC">USDC</option>
+                <option value="BUSD">BUSD</option>
+                <option value="USDT">USDT</option>
 */
   return ( 
     <div className={signOutStyle.alertCard}>
@@ -99,11 +108,6 @@ export const AlertCard = () => {
                 <option value="BTC">BTC</option>
                 <option value="ETH">ETH</option>
                 <option value="BNB">BNB</option>
-                <option value="SOL">SOL</option>
-                <option value="SOL">SOL</option>
-                <option value="USDC">USDC</option>
-                <option value="BUSD">BUSD</option>
-                <option value="USDT">USDT</option>
           </select>
           <p className={signOutStyle.pAlert}>    Currnet price : ${alertCoinPrice}</p> 
           <select  className={signOutStyle.sAlert} onChange ={ (event) => { setAlertCoinPercent(event.target.value) }}>

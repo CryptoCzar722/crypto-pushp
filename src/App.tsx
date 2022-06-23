@@ -32,8 +32,8 @@ import { NewsCard } from './NewsCard';
 
 function App() {
   //console.log("process.env ",process.env)
-  const [pageState, setPageState] = useState("news");
-
+  const [pageState, setPageState] = useState("alert");
+//add settings to pick with tokens are up top
   const tickerSymbols = [
     {
       "proName": "BINANCE:BTCBUSD",
@@ -56,22 +56,21 @@ function App() {
       "title": "BNB/BUSD"
     }
   ];
-  //onClick={setPageState("swap")}
+
   return (
     <MoralisProvider serverUrl="https://tmplbudfhggp.usemoralis.com:2053/server" appId="zciDyDJrxgyMjOVHmbUo7IE8xtqxswlwZshrJRaz"> 
         <TickerTape 
         symbols = {tickerSymbols}
         colorTheme="light"
         ></TickerTape>
-        
-        <button className={styles.pageButton} onClick={() => setPageState("dex")}>
+        <div className= {styles.divButtons}>
+         <button className={styles.pageButton} onClick={() => setPageState("dex")}>
               Swap
         </button>
 
         <button className={styles.pageButton} onClick={() => setPageState("port")}>
               Portfolio
         </button>
-
 
         <button className={styles.pageButton} onClick={() => setPageState("alert")}>
               Alerts
@@ -84,7 +83,7 @@ function App() {
         <button className={styles.pageButton} onClick={() => setPageState("news")}>
             News
         </button>
-        
+        </div>
         {
         pageState == "dex" ?
           <div className={styles.backgroundParent}>
@@ -108,12 +107,12 @@ function App() {
           pageState == "market" ?    
           <div className={styles.backgroundParent}>  
               <div>
-                <TopTen/>
-              </div>  
-              <div>
                 <FearCard/>
                 <NewCoinCard/>
               </div>
+              <div>
+                <TopTen/>
+              </div>  
               <div>
                 <TopLosers/>
                 <TopGainers/>
