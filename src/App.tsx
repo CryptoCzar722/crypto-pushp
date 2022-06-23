@@ -32,7 +32,8 @@ import { NewsCard } from './NewsCard';
 
 function App() {
   //console.log("process.env ",process.env)
-  const [pageState, setPageState] = useState("dex");
+  const [pageState, setPageState] = useState("news");
+
   const tickerSymbols = [
     {
       "proName": "BINANCE:BTCBUSD",
@@ -55,6 +56,7 @@ function App() {
       "title": "BNB/BUSD"
     }
   ];
+  //onClick={setPageState("swap")}
   return (
     <MoralisProvider serverUrl="https://tmplbudfhggp.usemoralis.com:2053/server" appId="zciDyDJrxgyMjOVHmbUo7IE8xtqxswlwZshrJRaz"> 
         <TickerTape 
@@ -62,13 +64,62 @@ function App() {
         colorTheme="light"
         ></TickerTape>
         
+        <button className={styles.pageButton} onClick={() => setPageState("dex")}>
+              Swap
+        </button>
+
+        <button className={styles.pageButton} onClick={() => setPageState("port")}>
+              Portfolio
+        </button>
+
+
+        <button className={styles.pageButton} onClick={() => setPageState("alert")}>
+              Alerts
+        </button>
+        
+        <button className={styles.pageButton} onClick={() => setPageState("market")}>
+            Market
+        </button>
+
+        <button className={styles.pageButton} onClick={() => setPageState("news")}>
+            News
+        </button>
+        
         {
-        pageState == "DEX" ?
-          <SwapCard/>:
-        pageState == "news" ? 
-          <NewsCard/> :
-        pageState == "settings" ?    
-          <AlertsApp/> :
+        pageState == "dex" ?
+          <div className={styles.backgroundParent}>
+            <SwapCard/>
+          </div>
+          :
+          pageState == "news" ? 
+          <div className={styles.backgroundParent}>
+            <NewsCard/> 
+          </div> :
+          pageState == "port" ? 
+          <div className={styles.backgroundParent}>
+            <PortFolioCard/> 
+          </div>
+          :
+          pageState == "alert" ? 
+          <div className={styles.backgroundParent}>
+            <AlertCard/> 
+          </div>
+          :
+          pageState == "market" ?    
+          <div className={styles.backgroundParent}>  
+              <div>
+                <TopTen/>
+              </div>  
+              <div>
+                <FearCard/>
+                <NewCoinCard/>
+              </div>
+              <div>
+                <TopLosers/>
+                <TopGainers/>
+              </div>
+          </div>
+          :
           <AlertsApp/> 
         }
     </MoralisProvider>
