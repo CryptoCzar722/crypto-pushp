@@ -62,7 +62,7 @@ export const SwapCard = () => {
     const tokens = await Moralis.Plugins.oneInch.getSupportedTokens({
       chain: "bsc", // The blockchain you want to use (eth/bsc/polygon)
     });
-    console.log("tokens=",(tokens.tokens));
+    //console.log("tokens=",(tokens.tokens));
     setOneinchTokens(tokens.tokens);
   }
   
@@ -90,6 +90,7 @@ const renderAvailableTokens = () => {
     in_out == 0 ?  setTokenInImg(oneinchTokens[tokenAddy].logoURI) :setTokenOutImg(oneinchTokens[tokenAddy].logoURI); 
     in_out == 0 ? setSwapCoin(oneinchTokens[tokenAddy].symbol) : setSwapCoinOut(oneinchTokens[tokenAddy].symbol);
     in_out == 0 ? setSwapCoinAddress(oneinchTokens[tokenAddy].address) : setSwapCoinAddressOut(oneinchTokens[tokenAddy].address)//.toUpperCase());
+    //console.log("swapCoinAmount=",swapCoinAmount);
     setQuoteData(swapCoinAmount);
   }
 
@@ -106,7 +107,7 @@ const renderAvailableTokens = () => {
     console.log("swapOptions=",swapOptions);
     
     const quote = await Moralis.Plugins.oneInch.quote(swapOptions);
-    console.log(quote);//.estimatedGas);
+    //console.log(quote.toTokenAmount);//.estimatedGas);
     setSwapCoinAmountOut(quote.toTokenAmount / 1000000000000000000) /// quote.toToken.decimals)
   }
   else {//if (amount == "") {
@@ -144,7 +145,10 @@ return (
       <img src= {tokenInImg} width="30" height="30"/> 
       <select  className={signOutStyle.sSwap} onChange ={ (event) => { 
                 //setTokenAddress(event.target.value) 
-                console.log(event.target);
+                console.log(oneinchTokens[event.target.value].address);
+               // setTokenInImg(oneinchTokens[event.target.value].logoURI); 
+               // setSwapCoin(oneinchTokens[event.target.value].symbol);
+               // setSwapCoinAddress(oneinchTokens[event.target.value].address)//.toUpperCase());
                 FindAvailableToken(event.target.value,0) 
                 }}>
                 {renderAvailableTokens()}
@@ -158,7 +162,10 @@ return (
       <img src= {tokenOutImg} width="30" height="30"/> 
       <select  className={signOutStyle.sSwap} onChange ={ (event) => { 
                 //setTokenAddress(event.target.value) 
-                console.log(event.target.value.toString());
+                console.log(oneinchTokens[event.target.value].address);
+               // setTokenOutImg(oneinchTokens[event.target.value].logoURI); 
+               // setSwapCoinOut(oneinchTokens[event.target.value].symbol);
+               // setSwapCoinAddressOut(oneinchTokens[event.target.value].address)//.toUpperCase());
                 FindAvailableToken(event.target.value,1) 
                 }}>
                 {renderAvailableTokens()}
