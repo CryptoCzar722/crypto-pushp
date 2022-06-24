@@ -31,12 +31,12 @@ export const SwapCard = () => {
   //order info
   const [orderType,setOrderType] = useState("market");
   //in
-  const [swapCoin, setSwapCoin] = useState("BUSD");
-  const [swapCoinAddress, setSwapCoinAddress] = useState("");
+  const [swapCoin, setSwapCoin] = useState("BNB")//USDC");
+  const [swapCoinAddress, setSwapCoinAddress] = useState("0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c");//"0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d");
   const [swapCoinAmount, setSwapCoinAmount] = useState("0.0");
   //out
   const [swapCoinOut, setSwapCoinOut] = useState("BNB");
-  const [swapCoinAddressOut, setSwapCoinAddressOut] = useState("");
+  const [swapCoinAddressOut, setSwapCoinAddressOut] = useState("0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c");
   const [swapCoinAmountOut, setSwapCoinAmountOut] = useState("0.0");
   //order stuff
   const [orderExchange,setOrderExchange] = useState("PancakeSwap");
@@ -44,7 +44,7 @@ export const SwapCard = () => {
   const [dataViewer,setDataViewer] = useState("chart");
   const [oneinchTokens,setOneinchTokens] = useState("");
   //imgs
-  const [tokenInImg,setTokenInImg] = useState("https://tokens.1inch.io/0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c_1.png");
+  const [tokenInImg,setTokenInImg] = useState("https://tokens.1inch.io/0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c_1.png");//"https://tokens.1inch.io/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png")
   const [tokenOutImg,setTokenOutImg] = useState("https://tokens.1inch.io/0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c_1.png");
 
   const fetchBalance = async () => {
@@ -109,6 +109,9 @@ const renderAvailableTokens = () => {
     console.log(quote);//.estimatedGas);
     setSwapCoinAmountOut(quote.toTokenAmount / 1000000000000000000) /// quote.toToken.decimals)
   }
+  else {//if (amount == "") {
+    setSwapCoinAmountOut("0.00");
+  }
 }
 
   const swapTokens = async ()=>{
@@ -125,6 +128,7 @@ const renderAvailableTokens = () => {
     console.log(quote.toTokenAmount)//estimatedGas);
 
   }
+
 /*
 <select  className={signOutStyle.sSwap} onChange ={ (event) => { setOrderExchange(event.target.value) }}>
             <option value="PancakeSwap">PancakeSwap</option>
