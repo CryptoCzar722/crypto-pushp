@@ -90,7 +90,7 @@ export const PortFolioCard = () => {
   }
 
   const sendCoins = async () =>{
-
+    console.log("send BEP20 tokens")
   };
 
   const checkAddress = async (addressTo) => {
@@ -147,6 +147,15 @@ const renderDropDataPortfolio = () => {
        //     }
         })
         }
+
+        /*
+<button 
+              className={(sendAddress == "waiting" || sendAddress == "error") ? styles.sendButton : styles.sendButtonReady} 
+              //{(sendAddress == "waiting" || sendAddress == "error") ? "true" : "false"}
+              onClick={e => sendCoins()}>
+              Send Tokens
+              </button>
+        */
       
   return ( 
     <div className={signOutStyle.portfolioCard}>
@@ -230,11 +239,23 @@ const renderDropDataPortfolio = () => {
               onChange={e => checkAddress(e.target.value)}
               required />
               <div>
+              {
+              (sendAddress == "waiting" || sendAddress == "error")
+              ?
               <button 
-              className={(sendAddress == "waiting" || sendAddress == "error") ? styles.sendButton : styles.sendButtonReady} 
-              onClick={e => sendCoins()}>
-              Send Tokens 
+              className={styles.sendButton} 
+              //{(sendAddress == "waiting" || sendAddress == "error") ? "true" : "false"}
+              disbaled>
+              Enter Address to Send
               </button>
+              :
+              <button 
+              className={styles.sendButtonReady} 
+              //{(sendAddress == "waiting" || sendAddress == "error") ? "true" : "false"}
+              onClick={e => sendCoins()}>
+              Send Tokens
+              </button>
+              }
               </div>
             </div> 
             
