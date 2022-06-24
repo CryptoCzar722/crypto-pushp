@@ -1,25 +1,22 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
-import { MoralisProvider} from "react-moralis";
-import { useState } from "react";
+import { MoralisProvider, useMoralis} from "react-moralis";
+import { useEffect, useState } from "react";
 import SignIn from "./SignIn";
 import { SignOut } from "./SignOut";
 import  AlertsApp  from "./AlertsApp";
 import styles from "./styles/Home.module.css";
-import { BrowserView, MobileView, isBrowser, isMobile } from 'react-device-detect';
+//import { BrowserView, MobileView, isBrowser, isMobile } from 'react-device-detect';
 import { TickerTape } from "react-ts-tradingview-widgets";
 
-import Header  from './Header';
+//import Header  from './Header';
 import { SwapCard } from "./SwapCard";
 import { AlertCard } from "./AlertCard";
-import { TopTen } from './TopTen';
-import { FearCard } from './FearCard';
-import { NewCoinCard } from './NewCoinCard';
 import { PortFolioCard } from './PortFolioCard';
-import { TopGainers } from './TopGainers';
-import { TopLosers } from './TopLosers';
 import { NewsCard } from './NewsCard';
+
+import {MarketPage} from './MarketPage';
 
 /*
       <div className={styles.divBack} >
@@ -32,7 +29,7 @@ import { NewsCard } from './NewsCard';
 
 function App() {
   //console.log("process.env ",process.env)
-  const [pageState, setPageState] = useState("port");
+  const [pageState, setPageState] = useState("dex");
 //add settings to pick with tokens are up top
   const tickerSymbols = [
     {
@@ -56,7 +53,8 @@ function App() {
       "title": "BNB/BUSD"
     }
   ];
-
+  
+  
   return (
     <MoralisProvider serverUrl="https://tmplbudfhggp.usemoralis.com:2053/server" appId="zciDyDJrxgyMjOVHmbUo7IE8xtqxswlwZshrJRaz"> 
         <TickerTape 
@@ -64,7 +62,12 @@ function App() {
         colorTheme="light"
         ></TickerTape>
         <div className= {styles.divButtons}>
-         <button className={styles.pageButton} onClick={() => setPageState("dex")}>
+        
+        <button className={styles.pageButton} onClick={() => setPageState("market")}>
+            Market
+        </button>
+
+        <button className={styles.pageButton} onClick={() => setPageState("dex")}>
               Swap
         </button>
 
@@ -74,10 +77,6 @@ function App() {
 
         <button className={styles.pageButton} onClick={() => setPageState("alert")}>
               Alerts
-        </button>
-        
-        <button className={styles.pageButton} onClick={() => setPageState("market")}>
-            Market
         </button>
 
         <button className={styles.pageButton} onClick={() => setPageState("news")}>
@@ -104,8 +103,11 @@ function App() {
             <AlertCard/> 
           </div>
           :
-          pageState == "market" ?    
-          <div className={styles.backgroundParent}>  
+          pageState == "market" ? 
+          <div className={styles.backgroundParent}>
+            <MarketPage/>
+          </div> 
+          /*<div className={styles.backgroundParent}>  
               <div>
                 <FearCard/>
                 <NewCoinCard/>
@@ -117,7 +119,7 @@ function App() {
                 <TopLosers/>
                 <TopGainers/>
               </div>
-          </div>
+          </div>*/
           :
           <AlertsApp/> 
         }

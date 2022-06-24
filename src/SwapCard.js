@@ -37,6 +37,7 @@ export const SwapCard = () => {
   const [orderExchange,setOrderExchange] = useState("PancakeSwap");
   const [limitPrice,setLimitPrice] = useState("1");
   const [dataViewer,setDataViewer] = useState("chart");
+  const [oneinchTokens,setOneinchTokens] = useState("");
 
   const fetchBalance = async () => {
     try {
@@ -47,15 +48,56 @@ export const SwapCard = () => {
       setBalance(balance.balance / 10 ** 18);
     } catch {}
   };
+
+  const fetchTokens = async () => {
+    await Moralis.initPlugins()
+    const tokens = await Moralis.Plugins.oneInch.getSupportedTokens({
+      chain: "bsc", // The blockchain you want to use (eth/bsc/polygon)
+    });
+    //console.log("tokens length=",tokens.length);
+    console.log("tokens=",(tokens.tokens));
+    setOneinchTokens(tokens.tokens);
+  }
   
   useEffect(() => {
     //fetchBalance();
     //console.log("swap card is authenticated ->", isAuthenticated);
     Moralis.start({"appId" : "zciDyDJrxgyMjOVHmbUo7IE8xtqxswlwZshrJRaz","serverUrl" : "https://tmplbudfhggp.usemoralis.com:2053/server"});
+    fetchTokens()
   }, []);
 
 //<p className={signOutStyle.pAlert}> Order Type : {orderType} </p>
   
+const renderAvailableTokens = () => {
+  return Object.keys(oneinchTokens).map((key, index) => {
+  //const {address,decimals,logoURI,name,symbol} = oneinchTokens //destructuring 
+      return (
+            <option key={key} value={oneinchTokens[key].symbol}>{oneinchTokens[key].name}</option>
+            )
+  })
+  }
+
+  const FindAvailableToken = (tokenAddy, in_out) => { 
+    in_out == 0 ? setSwapCoin(tokenAddy) : setSwapCoinOut(tokenAddy);
+    }
+
+    /*
+    //in 
+    <input
+          className= {signOutStyle.iSwap} //"form-control form-control-lg"
+          type="text"
+          placeholder={"BUSD"}
+          onChange={e => setSwapCoin(e.target.value.toUpperCase())} 
+          required />
+    //out
+     <input
+          className= {signOutStyle.iSwap}//"form-control form-control-lg"
+          type="text"
+          placeholder={"BNB"}
+          onChange={e => setSwapCoinOut(e.target.value.toUpperCase())} 
+          required />
+    */
+
 return ( 
     <div className={isMobile == false ? signOutStyle.signOutCard : signOutStyle.signOutCardMobile}>
     <div>
@@ -65,12 +107,12 @@ return (
             <option value="PancakeSwap">PancakeSwap</option>
       </select>
       <p className={signOutStyle.pAlert}>  Coin In : {swapCoin }</p> 
-      <input
-          className= {signOutStyle.iSwap} //"form-control form-control-lg"
-          type="text"
-          placeholder={"BUSD"}
-          onChange={e => setSwapCoin(e.target.value.toUpperCase())} 
-          required />
+      <select  className={signOutStyle.sSwap} onChange ={ (event) => { 
+                //setTokenAddress(event.target.value) 
+                FindAvailableToken(event.target.value.toUpperCase(),0) 
+                }}>
+                {renderAvailableTokens()}
+      </select> 
       <p className={signOutStyle.pAlert}>  Amount In : {swapCoinAmount }</p> 
       <input
           className= {signOutStyle.iSwap} //"form-control form-control-lg"
@@ -79,12 +121,12 @@ return (
           onChange={e => setSwapCoinAmount(e.target.value.toUpperCase())} 
           required />
       <p className={signOutStyle.pAlert}>  Coin Out : {swapCoinOut}</p>   
-      <input
-          className= {signOutStyle.iSwap}//"form-control form-control-lg"
-          type="text"
-          placeholder={"BNB"}
-          onChange={e => setSwapCoinOut(e.target.value.toUpperCase())} 
-          required />
+      <select  className={signOutStyle.sSwap} onChange ={ (event) => { 
+                //setTokenAddress(event.target.value) 
+                FindAvailableToken(event.target.value.toUpperCase(),1) 
+                }}>
+                {renderAvailableTokens()}
+      </select>
       <select  className={signOutStyle.sSwap} onChange ={ (event) => { setOrderType(event.target.value) }}>
             <option value="market">market</option>
             <option value="limit">limit</option>

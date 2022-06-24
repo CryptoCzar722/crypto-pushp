@@ -95,7 +95,7 @@ const renderTableData = () => {
       }
     })
   }
-  
+  //style="overflow-x:auto;"
   return ( 
     <div className={signOutStyle.medCard}>
     <div className={signOutStyle.divNewCoins}>New Projects</div>
@@ -106,7 +106,7 @@ const renderTableData = () => {
       endDate = {new Date(startDate)}
       onChange={(date) => FindDate(date)} />
       <h5 className={styles.hNewCoin}>{dateUpdated} </h5>
-          <div>
+          <div >
             <table className={signOutStyle.table}>
             <thead>
               <tr>
@@ -123,9 +123,8 @@ const renderTableData = () => {
                <tbody >
                 {renderTableData()}
                </tbody>
-            </table>
-           
-         </div>
+            </table>   
+          </div>
     </div>
     
   );

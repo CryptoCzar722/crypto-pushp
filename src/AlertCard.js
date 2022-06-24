@@ -69,24 +69,16 @@ export const AlertCard = () => {
     fetchPrices("BTC");
     console.log("alert card is authenticated ->", isAuthenticated);
   }, []);
-/*
-<input
-              className= {signOutStyle.iAlert} //"form-control form-control-lg"
-              type="text"
-              placeholder={"Ticker/Contract Address"}
-              onChange={e => setAlertCoin(e.target.value.toUpperCase())} 
-              required />
 
-<p className={signOutStyle.pAlert}>    Coin Selected : {alertCoin}</p>
-*/
-/*
-//next coins for alerts
-                <option value="SOL">SOL</option>
-                <option value="SOL">SOL</option>
-                <option value="USDC">USDC</option>
-                <option value="BUSD">BUSD</option>
-                <option value="USDT">USDT</option>
-*/
+  /*
+  <input
+              className= {signOutStyle.iAlert}//"form-control form-control-lg"
+              type="text"
+              placeholder={"+1XXXXXXXXXX"}
+              onChange={e => setPhoneNumber(e.target.value.toUpperCase())} 
+              required />
+  */
+
   return ( 
     <div className={signOutStyle.alertCard}>
       <select  className={signOutStyle.sAlertType} onChange ={ (event) => { 

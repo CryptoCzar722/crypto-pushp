@@ -88,7 +88,8 @@ export const PortFolioCard = () => {
         }
     })
   }
-
+  
+  //tag build out 
   const sendCoins = async () =>{
     console.log("send BEP20 tokens")
   };
@@ -116,6 +117,7 @@ export const PortFolioCard = () => {
     Moralis.start({"appId" : "zciDyDJrxgyMjOVHmbUo7IE8xtqxswlwZshrJRaz","serverUrl" : "https://tmplbudfhggp.usemoralis.com:2053/server"});
     axios.request(optionsERC20).then(function (response) {
         //console.log("portfolio->",response.data[0]);
+        console.log("response", (response.data));
         setBalanceERC20(response.data);
         
         const balanceFormatted = response.data[0].decimals == "18" ? Moralis.Units.FromWei(response.data[0].balance) : Moralis.Units.FromWei(response.data[0].balance, response.data[0].decimals)

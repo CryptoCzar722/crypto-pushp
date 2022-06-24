@@ -34,6 +34,7 @@ export const FearCard = () => {
   }
   
   useEffect(() => {
+    Moralis.start({"appId" : "zciDyDJrxgyMjOVHmbUo7IE8xtqxswlwZshrJRaz","serverUrl" : "https://tmplbudfhggp.usemoralis.com:2053/server"});
     queryFnG();
   }, []);
 
