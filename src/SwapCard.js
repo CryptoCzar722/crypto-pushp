@@ -137,7 +137,7 @@ return (
     <div>
     <div className={signOutStyle.swapCardMini}>
       <h4 className={signOutStyle.hAlert}> Swap </h4>
-      <img src= {tokenInImg} width="20" height="20"/> 
+      <img src= {tokenInImg} width="30" height="30"/> 
       <select  className={signOutStyle.sSwap} onChange ={ (event) => { 
                 //setTokenAddress(event.target.value) 
                 console.log(event.target);
@@ -151,7 +151,7 @@ return (
           placeholder={"0.0"}
           onChange={e => setQuoteData(e.target.value.toUpperCase())}//e.target.value.toUpperCase())} 
           required />
-      <img src= {tokenOutImg} width="20" height="20"/> 
+      <img src= {tokenOutImg} width="30" height="30"/> 
       <select  className={signOutStyle.sSwap} onChange ={ (event) => { 
                 //setTokenAddress(event.target.value) 
                 console.log(event.target.value.toString());
