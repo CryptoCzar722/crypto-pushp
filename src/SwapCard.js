@@ -30,14 +30,22 @@ export const SwapCard = () => {
   const [viewKey, setviewKey] = useState(0);
   //order info
   const [orderType,setOrderType] = useState("market");
+  //in
   const [swapCoin, setSwapCoin] = useState("BUSD");
+  const [swapCoinAddress, setSwapCoinAddress] = useState("");
   const [swapCoinAmount, setSwapCoinAmount] = useState("0.0");
-  
+  //out
   const [swapCoinOut, setSwapCoinOut] = useState("BNB");
+  const [swapCoinAddressOut, setSwapCoinAddressOut] = useState("");
+  const [swapCoinAmountOut, setSwapCoinAmountOut] = useState("0.0");
+  //order stuff
   const [orderExchange,setOrderExchange] = useState("PancakeSwap");
   const [limitPrice,setLimitPrice] = useState("1");
   const [dataViewer,setDataViewer] = useState("chart");
   const [oneinchTokens,setOneinchTokens] = useState("");
+  //imgs
+  const [tokenInImg,setTokenInImg] = useState("https://tokens.1inch.io/0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c_1.png");
+  const [tokenOutImg,setTokenOutImg] = useState("https://tokens.1inch.io/0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c_1.png");
 
   const fetchBalance = async () => {
     try {
@@ -54,7 +62,6 @@ export const SwapCard = () => {
     const tokens = await Moralis.Plugins.oneInch.getSupportedTokens({
       chain: "bsc", // The blockchain you want to use (eth/bsc/polygon)
     });
-    //console.log("tokens length=",tokens.length);
     console.log("tokens=",(tokens.tokens));
     setOneinchTokens(tokens.tokens);
   }
@@ -65,65 +72,90 @@ export const SwapCard = () => {
     Moralis.start({"appId" : "zciDyDJrxgyMjOVHmbUo7IE8xtqxswlwZshrJRaz","serverUrl" : "https://tmplbudfhggp.usemoralis.com:2053/server"});
     fetchTokens()
   }, []);
-
-//<p className={signOutStyle.pAlert}> Order Type : {orderType} </p>
   
+//NOTE: different than portfolio logic  must set object.keys first.
 const renderAvailableTokens = () => {
   return Object.keys(oneinchTokens).map((key, index) => {
   //const {address,decimals,logoURI,name,symbol} = oneinchTokens //destructuring 
-      return (
-            <option key={key} value={oneinchTokens[key].symbol}>{oneinchTokens[key].name}</option>
+  //console.log(oneinchTokens[key]);    
+  return (                          //oneinchTokens[key].symbol
+            <option key={key} value={key}>{oneinchTokens[key].name}</option>
             )
   })
   }
 
-  const FindAvailableToken = (tokenAddy, in_out) => { 
-    in_out == 0 ? setSwapCoin(tokenAddy) : setSwapCoinOut(tokenAddy);
-    }
+  const FindAvailableToken = async (tokenAddy, in_out) => { 
+    console.log("token OBJ", oneinchTokens[tokenAddy])
+    
+    in_out == 0 ?  setTokenInImg(oneinchTokens[tokenAddy].logoURI) :setTokenOutImg(oneinchTokens[tokenAddy].logoURI); 
+    in_out == 0 ? setSwapCoin(oneinchTokens[tokenAddy].symbol) : setSwapCoinOut(oneinchTokens[tokenAddy].symbol);
+    in_out == 0 ? setSwapCoinAddress(oneinchTokens[tokenAddy].address) : setSwapCoinAddressOut(oneinchTokens[tokenAddy].address)//.toUpperCase());
+    setQuoteData(swapCoinAmount);
+  }
 
-    /*
-    //in 
-    <input
-          className= {signOutStyle.iSwap} //"form-control form-control-lg"
-          type="text"
-          placeholder={"BUSD"}
-          onChange={e => setSwapCoin(e.target.value.toUpperCase())} 
-          required />
-    //out
-     <input
-          className= {signOutStyle.iSwap}//"form-control form-control-lg"
-          type="text"
-          placeholder={"BNB"}
-          onChange={e => setSwapCoinOut(e.target.value.toUpperCase())} 
-          required />
-    */
+  const setQuoteData = async (amount)=>{
+    if (amount != ""){
+    setSwapCoinAmount(amount)
+    await Moralis.initPlugins()
+    const swapOptions = {
+      chain: 'bsc', // The blockchain you want to use (eth/bsc/polygon)
+      fromTokenAddress: swapCoinAddress, // The token you want to swap
+      toTokenAddress: swapCoinAddressOut, // The token you want to receive
+      amount: Moralis.Units.Token(amount,"18"),
+    };
+    console.log("swapOptions=",swapOptions);
+    
+    const quote = await Moralis.Plugins.oneInch.quote(swapOptions);
+    console.log(quote);//.estimatedGas);
+    setSwapCoinAmountOut(quote.toTokenAmount / 1000000000000000000) /// quote.toToken.decimals)
+  }
+}
 
+  const swapTokens = async ()=>{
+    await Moralis.initPlugins()
+    const swapOptions = {
+      chain: 'bsc', // The blockchain you want to use (eth/bsc/polygon)
+      fromTokenAddress: swapCoinAddress, // The token you want to swap
+      toTokenAddress: swapCoinAddressOut, // The token you want to receive
+      amount: swapCoinAmount,
+    };
+    console.log("swapOptions=",swapOptions);
+    
+    const quote = await Moralis.Plugins.oneInch.quote(swapOptions);
+    console.log(quote.toTokenAmount)//estimatedGas);
+
+  }
+/*
+<select  className={signOutStyle.sSwap} onChange ={ (event) => { setOrderExchange(event.target.value) }}>
+            <option value="PancakeSwap">PancakeSwap</option>
+      </select>
+*/
+
+//Tag add loading icon to output amount when http response is waiting.
 return ( 
     <div className={isMobile == false ? signOutStyle.signOutCard : signOutStyle.signOutCardMobile}>
     <div>
     <div className={signOutStyle.swapCardMini}>
       <h4 className={signOutStyle.hAlert}> Swap </h4>
-      <select  className={signOutStyle.sSwap} onChange ={ (event) => { setOrderExchange(event.target.value) }}>
-            <option value="PancakeSwap">PancakeSwap</option>
-      </select>
-      <p className={signOutStyle.pAlert}>  Coin In : {swapCoin }</p> 
+      <img src= {tokenInImg} width="20" height="20"/> 
       <select  className={signOutStyle.sSwap} onChange ={ (event) => { 
                 //setTokenAddress(event.target.value) 
-                FindAvailableToken(event.target.value.toUpperCase(),0) 
+                console.log(event.target);
+                FindAvailableToken(event.target.value,0) 
                 }}>
                 {renderAvailableTokens()}
       </select> 
-      <p className={signOutStyle.pAlert}>  Amount In : {swapCoinAmount }</p> 
       <input
           className= {signOutStyle.iSwap} //"form-control form-control-lg"
           type="number"
           placeholder={"0.0"}
-          onChange={e => setSwapCoinAmount(e.target.value.toUpperCase())} 
+          onChange={e => setQuoteData(e.target.value.toUpperCase())}//e.target.value.toUpperCase())} 
           required />
-      <p className={signOutStyle.pAlert}>  Coin Out : {swapCoinOut}</p>   
+      <img src= {tokenOutImg} width="20" height="20"/> 
       <select  className={signOutStyle.sSwap} onChange ={ (event) => { 
                 //setTokenAddress(event.target.value) 
-                FindAvailableToken(event.target.value.toUpperCase(),1) 
+                console.log(event.target.value.toString());
+                FindAvailableToken(event.target.value,1) 
                 }}>
                 {renderAvailableTokens()}
       </select>
@@ -131,8 +163,9 @@ return (
             <option value="market">market</option>
             <option value="limit">limit</option>
       </select>
+      <p className={signOutStyle.pAlert}>  Amount Out : {parseFloat(swapCoinAmountOut).toFixed(2)}</p> 
       {orderType == "market" ? 
-      <p className={signOutStyle.pAlert}> Place Order</p> 
+      <hr></hr> 
       :
       <input
           className= {signOutStyle.iSwap}//"form-control form-control-lg"
@@ -141,7 +174,7 @@ return (
           onChange={e => setLimitPrice(e.target.value.toUpperCase())} 
           required />
       }
-          <button className={styles.swapButton} >
+          <button className={styles.swapButton} onClick = {swapTokens} >
           Swap
           </button>
           {isAuthenticated ?
@@ -165,7 +198,7 @@ return (
     {
       dataViewer === "chart" ? 
     <TradingViewWidget
-        symbol={"BINANCE:"+swapCoinOut+"BUSD"}
+        symbol={"BINANCE:"+swapCoinOut+swapCoin}//"BUSD"}
         locale="en"
         width = {500}
         height ={315}
@@ -187,6 +220,28 @@ return (
 
   );
 };
+
+    /*
+    <p className={signOutStyle.pAlert}>  Amount In : {swapCoinAmount }</p> 
+    //in 
+    <input
+          className= {signOutStyle.iSwap} //"form-control form-control-lg"
+          type="text"
+          placeholder={"BUSD"}
+          onChange={e => setSwapCoin(e.target.value.toUpperCase())} 
+          required />
+    //out
+     <input
+          className= {signOutStyle.iSwap}//"form-control form-control-lg"
+          type="text"
+          placeholder={"BNB"}
+          onChange={e => setSwapCoinOut(e.target.value.toUpperCase())} 
+          required />
+    */
+   
+//<img src= {tokenOutImg}/>
+//<p className={signOutStyle.pAlert}>  Coin In : {swapCoin }</p> 
+//<p className={signOutStyle.pAlert}>  Coin Out : {swapCoinOut}</p>
 
   /*
     <TradingViewWidget
