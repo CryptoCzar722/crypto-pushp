@@ -32,7 +32,7 @@ import { NewsCard } from './NewsCard';
 
 function App() {
   //console.log("process.env ",process.env)
-  const [pageState, setPageState] = useState("alert");
+  const [pageState, setPageState] = useState("port");
 //add settings to pick with tokens are up top
   const tickerSymbols = [
     {

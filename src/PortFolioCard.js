@@ -1,14 +1,13 @@
 import React from 'react';
-import { useMoralis } from "react-moralis";
+import { useMoralis, useMoralisWeb3Api } from "react-moralis";
 import signOutStyle from "./styles/SignOut.module.css";
 import styles from "./styles/Home.module.css";
 import { useEffect, useState } from "react";
 import { FaBan } from 'react-icons/fa';
 
-import TradingViewWidget from 'react-tradingview-widget';
-
 //must be last import
 const axios = require("axios");
+//EXamples do not delete. yet..
 /*
 curl -X 'GET' \
   'https://deep-index.moralis.io/api/v2/0x3B7Be8B0a1538d41B2D9784327CB951ee74D7D4E/erc20?chain=0x38' \
@@ -27,18 +26,14 @@ curl -X 'GET' \
 export const PortFolioCard = () => {
 
   const [balanceERC20, setBalanceERC20] = useState([]);
-  const [dateUpdated, setDateUpdated] = useState("");
-  //const[addressPrice,setAddressPrice] = useState("");
   const[price,setPrice] = useState("");
-  const[tokenArray,setTokenArray] = useState([]);
-  //
   const [cardCoin, setCardCoin] = useState([]);
-  const [tokenAddress, setTokenAddress] = useState("");
-  const[tokenName,setTokenName] = useState("");
-  const[totalBalance,setTotalBalance] = useState(0);
-
+  const[sendAddress,setSendAddress] = useState("waiting");
+  const[chain,setChain] = useState("");
+  
   const optionsERC20 = {
     method: 'GET',
+    //url: `https://deep-index.moralis.io/api/v2/${}/erc20?chain=0x38`,
     url: 'https://deep-index.moralis.io/api/v2/0x3B7Be8B0a1538d41B2D9784327CB951ee74D7D4E/erc20?chain=0x38',
     headers: {
       'accept': 'application/json',
@@ -48,7 +43,7 @@ export const PortFolioCard = () => {
 
   //application data
   const { isAuthenticated, logout, Moralis, user, ethAddress, authenticate, authError, isAuthenticating } = useMoralis();
-
+  const Web3Api = useMoralisWeb3Api();
   const handleCustomLogin = async () => {
     await authenticate({
       provider: "web3Auth",
@@ -94,6 +89,28 @@ export const PortFolioCard = () => {
     })
   }
 
+  const sendCoins = async () =>{
+
+  };
+
+  const checkAddress = async (addressTo) => {
+    const options = {
+      chain: "bsc",
+      address: addressTo
+    };
+    await Web3Api.account.getNativeBalance(options).then((bscBalance) =>{
+        console.log("bscBalance=", bscBalance);
+        setSendAddress(addressTo)  
+    }).catch(()=>{
+      console.log("bsc address invalid");
+      setSendAddress("error");
+    });
+    if (addressTo == "")
+      {
+      setSendAddress("waiting");
+      } 
+  }
+
   useEffect(() => {
     //console.log("swap card is authenticated ->", isAuthenticated);
     Moralis.start({"appId" : "zciDyDJrxgyMjOVHmbUo7IE8xtqxswlwZshrJRaz","serverUrl" : "https://tmplbudfhggp.usemoralis.com:2053/server"});
@@ -111,76 +128,12 @@ export const PortFolioCard = () => {
           price : "0.00"
         }
         setCardCoin(coinData);
-        
-        //console.log("response.data.length->",response.data.length);
-        /*(response.data).forEach(element => {
-          //console.log(tokenArray.length,"token_address->",element)
-          const portfolioData = {
-            name : element.name,
-            address : element.token_address,
-            balance : element.balance,
-            decimals : element.decimals
-          }
-          tokenArray.push(portfolioData)
-        });*/
-        
-        //let dateNow = "1:05 AM";//new Date();
-        //setDateUpdated(dateNow);
       }).catch(function (error) {
         console.error(error);
       }).then(()=> {
         FindToken(cardCoin.address);
       })
-      
-      /*.then(()=>{
-          tokenArray.forEach(element => {
-                //console.log(tokenArray.length,"address->",element)
-                const optionsERC20Price = {
-                  method: 'GET',
-                  url: `https://api.pancakeswap.info/api/v2/tokens/${element.address}`,
-                  headers: {
-                    'accept': 'application/json',
-                  }
-                };
-                //console.log("query->",optionsERC20Price)
-                const formattedBalance = element.decimals == "18" ? Moralis.Units.FromWei(element.balance) : Moralis.Units.FromWei(element.balance, element.decimals);
-                if (formattedBalance % 1 != 0){
-                    //console.log(element.name, " formattedBalance ",formattedBalance);
-                    axios.request(optionsERC20Price).then(function (response) {
-                        if (response.data.data.price > 0 && element.address != "0xba96731324de188ebc1ed87ca74544ddebc07d7f"){
-                          //console.log("balanceERC20Price data->",response.data.data.name,response.data.data.price);
-                          let userBal = Number(formattedBalance * parseFloat(response.data.data.price));                        
-                          console.log(element.address,element.name, " USD ",(userBal), totalBalance);
-                          //setTotalBalance(totalBalance+userBal)
-                        }
-                      }).catch(function (error) {
-                        console.error(error);
-                      });
-                    }
-          });
-          });*/
-    //fetchBalance();
    }, []);
-   /*
- balanceERC20.forEach(element  => {
-          console.log("element.token_address->",element.token_address);
-          /*const optionsERC20Price = {
-            method: 'GET',
-            url: `https://deep-index.moralis.io/api/v2/erc20/${element.token_address}/price?chain=0x38`,
-            headers: {
-              'accept': 'application/json',
-              'X-API-Key': 'ZwRSxOl8dC52wkmj42u34rKl92UimdHvbO1kg1oVXktQ5fHKprjNvHl3zbCbiUuW'
-            }
-          };
-          axios.request(optionsERC20Price).then(function (response) {
-
-          console.log("balanceERC20Price->",response.data);
-
-        }).catch(function (error) {
-          console.error(error);
-        });
-      })
-   */
 
 const renderDropDataPortfolio = () => {
         return balanceERC20.map((balanceERC20, index) => {
@@ -195,47 +148,6 @@ const renderDropDataPortfolio = () => {
         })
         }
       
-/*
-                            <table className={signOutStyle.table}>
-                            <thead>
-                                <tr>
-                                    <th>name</th>
-                                    <th>symbol</th>
-                                    <th>balance</th>
-                                    <th>decimals</th>
-                                    <th>token_address</th>
-                                </tr>
-                            </thead>
-                            <tbody >
-                                {renderTableDataPortfolio()}
-                            </tbody>
-                            </table>
-const renderTableDataPortfolio = () => {
-    return balanceERC20.map((balanceERC20, index) => {
-    const { balance,decimals,logo,name,symbol,thumbnail,token_address} = balanceERC20 //destructuring 
-    return (
-          <tr className={signOutStyle.td}  key={token_address}>
-            <td>{name}</td>
-            <td>{symbol}</td>
-            <td>{decimals == "18" ? Moralis.Units.FromWei(balance) : Moralis.Units.FromWei(balance, decimals)}</td>
-            <td>{parseFloat(decimals)}</td>
-            <td>{token_address}</td>
-          </tr>
-      )
-    })
-    }
-
-
-    <div className={signOutStyle.chart}>
-              <TradingViewWidget
-                  symbol={"BINANCE:"+cardCoin.symbol+"USDT"}
-                  locale="fr"
-                  width = {500}
-                  height ={315}
-                />
-              </div>
-*/
-
   return ( 
     <div className={signOutStyle.portfolioCard}>
         {
@@ -243,7 +155,19 @@ const renderTableDataPortfolio = () => {
         ?
         <div>
           <h5 className= {signOutStyle.hTop10}> Portfolio </h5>
-            <div className={signOutStyle.portfolioCardMini}>    
+            <div className={signOutStyle.portfolioCardMini}>   
+            <h5 className= {signOutStyle.hTop10}> Chain: </h5>
+            <select  className={signOutStyle.sAlert} onChange ={ (event) => { 
+              //setAlertCoin(event.target.value) 
+              setChain(event.target.value)
+              }}>
+                  <option value="BNB">BNB 0x38</option>
+                  <option value="BTC">BTC</option>
+                  <option value="ETH">ETH</option>
+                  
+                  <option value="ADA">SOL</option>
+            </select> 
+            <h5 className= {signOutStyle.hTop10}> Coin: </h5>
               <select  className={signOutStyle.sPort} onChange ={ (event) => { 
                 //setTokenAddress(event.target.value) 
                 FindToken(event.target.value) 
@@ -298,6 +222,20 @@ const renderTableDataPortfolio = () => {
               <span className= {signOutStyle.hPortL}> Symbol : </span> 
               <span > {cardCoin.symbol}</span> 
             </div>
+            
+            <input
+              className= {sendAddress == "waiting" ? signOutStyle.sendInput : sendAddress == "error" ? signOutStyle.sendInputError : signOutStyle.sendInput }//"form-control form-control-lg"
+              type="text"
+              placeholder={"0x3B7Be8B0a1..........784327CB951ee74D7D4E"}
+              onChange={e => checkAddress(e.target.value)}
+              required />
+              <div>
+              <button 
+              className={(sendAddress == "waiting" || sendAddress == "error") ? styles.sendButton : styles.sendButtonReady} 
+              onClick={e => sendCoins()}>
+              Send Tokens 
+              </button>
+              </div>
             </div> 
             
         </div>
@@ -312,3 +250,113 @@ const renderTableDataPortfolio = () => {
 
   );
 };
+
+
+        //console.log("response.data.length->",response.data.length);
+        /*(response.data).forEach(element => {
+          //console.log(tokenArray.length,"token_address->",element)
+          const portfolioData = {
+            name : element.name,
+            address : element.token_address,
+            balance : element.balance,
+            decimals : element.decimals
+          }
+          tokenArray.push(portfolioData)
+        });*/
+        
+        //let dateNow = "1:05 AM";//new Date();
+        //setDateUpdated(dateNow);
+
+
+
+ 
+      /*.then(()=>{
+          tokenArray.forEach(element => {
+                //console.log(tokenArray.length,"address->",element)
+                const optionsERC20Price = {
+                  method: 'GET',
+                  url: `https://api.pancakeswap.info/api/v2/tokens/${element.address}`,
+                  headers: {
+                    'accept': 'application/json',
+                  }
+                };
+                //console.log("query->",optionsERC20Price)
+                const formattedBalance = element.decimals == "18" ? Moralis.Units.FromWei(element.balance) : Moralis.Units.FromWei(element.balance, element.decimals);
+                if (formattedBalance % 1 != 0){
+                    //console.log(element.name, " formattedBalance ",formattedBalance);
+                    axios.request(optionsERC20Price).then(function (response) {
+                        if (response.data.data.price > 0 && element.address != "0xba96731324de188ebc1ed87ca74544ddebc07d7f"){
+                          //console.log("balanceERC20Price data->",response.data.data.name,response.data.data.price);
+                          let userBal = Number(formattedBalance * parseFloat(response.data.data.price));                        
+                          console.log(element.address,element.name, " USD ",(userBal), totalBalance);
+                          //setTotalBalance(totalBalance+userBal)
+                        }
+                      }).catch(function (error) {
+                        console.error(error);
+                      });
+                    }
+          });
+          });*/
+    //fetchBalance();
+    /*
+ balanceERC20.forEach(element  => {
+          console.log("element.token_address->",element.token_address);
+          /*const optionsERC20Price = {
+            method: 'GET',
+            url: `https://deep-index.moralis.io/api/v2/erc20/${element.token_address}/price?chain=0x38`,
+            headers: {
+              'accept': 'application/json',
+              'X-API-Key': 'ZwRSxOl8dC52wkmj42u34rKl92UimdHvbO1kg1oVXktQ5fHKprjNvHl3zbCbiUuW'
+            }
+          };
+          axios.request(optionsERC20Price).then(function (response) {
+
+          console.log("balanceERC20Price->",response.data);
+
+        }).catch(function (error) {
+          console.error(error);
+        });
+      })
+   */
+
+
+      /*
+                            <table className={signOutStyle.table}>
+                            <thead>
+                                <tr>
+                                    <th>name</th>
+                                    <th>symbol</th>
+                                    <th>balance</th>
+                                    <th>decimals</th>
+                                    <th>token_address</th>
+                                </tr>
+                            </thead>
+                            <tbody >
+                                {renderTableDataPortfolio()}
+                            </tbody>
+                            </table>
+const renderTableDataPortfolio = () => {
+    return balanceERC20.map((balanceERC20, index) => {
+    const { balance,decimals,logo,name,symbol,thumbnail,token_address} = balanceERC20 //destructuring 
+    return (
+          <tr className={signOutStyle.td}  key={token_address}>
+            <td>{name}</td>
+            <td>{symbol}</td>
+            <td>{decimals == "18" ? Moralis.Units.FromWei(balance) : Moralis.Units.FromWei(balance, decimals)}</td>
+            <td>{parseFloat(decimals)}</td>
+            <td>{token_address}</td>
+          </tr>
+      )
+    })
+    }
+
+
+    <div className={signOutStyle.chart}>
+              <TradingViewWidget
+                  symbol={"BINANCE:"+cardCoin.symbol+"USDT"}
+                  locale="fr"
+                  width = {500}
+                  height ={315}
+                />
+              </div>
+*/
