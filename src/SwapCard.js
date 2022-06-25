@@ -7,8 +7,10 @@ import { useEffect, useState } from "react";
 import TradingViewWidget from 'react-tradingview-widget';
 import { TechnicalAnalysis } from "react-ts-tradingview-widgets";
 import { BrowserView, MobileView, isBrowser, isMobile } from 'react-device-detect';
-
 import { TailSpin } from  'react-loader-spinner'
+
+import { FaLongArrowAltDown,FaArrowsAltV } from 'react-icons/fa';
+
 
 export const SwapCard = () => {
   
@@ -18,8 +20,8 @@ export const SwapCard = () => {
   const handleCustomLogin = async () => {
     await authenticate({
       provider: "web3Auth",
-      clientId: "BN-6dNNgKK_DJmhff63kvmqoyfUMVTEYdjRbp_pIZCvdPmj69n94pHl4rVCymrqmuUQAnB91e-5Go2TA2LzSdyM",
-      chainId: Moralis.Chains.BNB,
+      clientId:"BCYdRX4SDVbsfHOGHTYDxF3b8ktRUAQDmvLIitizwaUVtWZeosFhOR13vJlCWJI2TKRwVLhPGJboxWa1n7Mfuso",//clientId: "BN-6dNNgKK_DJmhff63kvmqoyfUMVTEYdjRbp_pIZCvdPmj69n94pHl4rVCymrqmuUQAnB91e-5Go2TA2LzSdyM",
+      chainId: '0x38',//Moralis.Chains.BNB,
       theme: 'dark',
       appLogo: "",
       logingMethodsOrder : ["google", "facebook", "twitter"]//, "reddit", "discord", "twitch", "apple", "github", "linkedin", "email_passwordless"]
@@ -106,16 +108,6 @@ const renderAvailableTokens = () => {
   })
   }
 
-  const FindAvailableToken = async (tokenAddy, in_out) => { 
-    //console.log("token OBJ", oneinchTokens[tokenAddy])
-    //console.log("symbol ",oneinchTokens[tokenAddy].symbol)
-    //console.log("address ",oneinchTokens[tokenAddy].address)
-    in_out == 0 ? setTokenInImg(oneinchTokens[tokenAddy].logoURI) :setTokenOutImg(oneinchTokens[tokenAddy].logoURI); 
-    in_out == 0 ? setSwapCoin(oneinchTokens[tokenAddy].symbol) : setSwapCoinOut(oneinchTokens[tokenAddy].symbol);
-    in_out == 0 ? setSwapCoinAddress(oneinchTokens[tokenAddy].address) : setSwapCoinAddressOut(oneinchTokens[tokenAddy].address)//.toUpperCase());
-    
-    //setQuoteData(swapCoinAmount);
-  }
 
 const setQuoteData = async (amount,AddressIn,AddressOut)=>{
   setCalculatingPrice(true)
@@ -123,18 +115,19 @@ const setQuoteData = async (amount,AddressIn,AddressOut)=>{
     setSwapCoinAmount(amount)
     await Moralis.initPlugins()
     const swapOptions = {
-      chain: 'bsc', // The blockchain you want to use (eth/bsc/polygon)
-      fromTokenAddress: AddressIn, // The token you want to swap
-      toTokenAddress: AddressOut, // The token you want to receive
-      amount: Moralis.Units.Token(amount,"18"),
+      chain: 'bsc',                 // The blockchain you want to use (eth/bsc/polygon)
+      fromTokenAddress: AddressIn,  // The token you want to swap
+      toTokenAddress: AddressOut,   // The token you want to receive
+      amount: Moralis.Units.Token(amount,"18"), //ensure to parse to correct deicmals
     };
-    //console.log("swapOptions=",swapOptions);
-    //const quote = 
+    
     await Moralis.Plugins.oneInch.quote(swapOptions).then((quote) => {
       console.log("quote.toTokenAmount-",quote.toTokenAmount);
       console.log("quote.toTokenAmount-",quote.toToken.decimals);
       console.log("quote formatted-",Moralis.Units.FromWei(quote.toTokenAmount,quote.toToken.decimals))
+      //old way broken leaving for ref of what not to do
       //setSwapCoinAmountOut(parseFloat(quote.toTokenAmount / 1000000000000000000).toFixed(2)) /// quote.toToken.decimals)
+      //ideal method
       setSwapCoinAmountOut(parseFloat(Moralis.Units.FromWei(quote.toTokenAmount,quote.toToken.decimals)).toFixed(4))
       setCalculatingPrice(false)
     }).catch((error)=>{
@@ -165,43 +158,31 @@ return (
       <div>
       <div className={signOutStyle.swapCardMini}>
         <h4 className={signOutStyle.hAlert}> Swap</h4>
-        <h8>{swapCoinAddress} + {swapCoinAddressOut}</h8>
+        <div className={signOutStyle.smalltext}>{swapCoinAddress} to {swapCoinAddressOut}</div>
         <img src= {tokenInImg} width="30" height="30"/> 
-        <select  className={signOutStyle.sSwap} onChange ={ (event) => { 
-                //setTokenAddress(event.target.value) 
-                //console.log(oneinchTokens[event.target.value].address);
+        <select  className={signOutStyle.sSwap} onChange ={ (event) => {  
               setTokenInImg(oneinchTokens[event.target.value].logoURI); 
               setSwapCoin(oneinchTokens[event.target.value].symbol);
-              setSwapCoinAddress(oneinchTokens[event.target.value].address)//.toUpperCase());
-              console.log("exp swapCoinAddressIn ",oneinchTokens[event.target.value].address)
+              setSwapCoinAddress(oneinchTokens[event.target.value].address)
               setSwapCoinAmountOut("--")
-              console.log("real swapCoinAddressIn ",swapCoinAddress)
               setQuoteData(swapCoinAmount,oneinchTokens[event.target.value].address,swapCoinAddressOut);
-              //setQuoteData(swapCoinAmount);
-              //console.log("swapCoinAddressIn ",swapCoinAddress)
-               //FindAvailableToken(event.target.value,0) 
                 }}>
                 {renderAvailableTokens()}
         </select> 
         <input
-          className= {signOutStyle.iSwap} //"form-control form-control-lg"
+          className= {signOutStyle.iSwap} 
           type="number"
           placeholder={swapCoinAmount}
-          onChange={e => setQuoteData(e.target.value, swapCoinAddress,swapCoinAddressOut)}//e.target.value.toUpperCase())} 
+          onChange={e => setQuoteData(e.target.value, swapCoinAddress,swapCoinAddressOut)}
           required />
         <img src= {tokenOutImg} width="30" height="30"/> 
+        <FaLongArrowAltDown  className={signOutStyle.swapArrow} />
         <select  className={signOutStyle.sSwap} onChange ={ (event) => { 
-                //setTokenAddress(event.target.value) 
-                //console.log(oneinchTokens[event.target.value].address);
                 setTokenOutImg(oneinchTokens[event.target.value].logoURI); 
                 setSwapCoinOut(oneinchTokens[event.target.value].symbol);
-                setSwapCoinAddressOut(oneinchTokens[event.target.value].address)//.toUpperCase());
+                setSwapCoinAddressOut(oneinchTokens[event.target.value].address)
                 setSwapCoinAmountOut("--")
                 setQuoteData(swapCoinAmount,swapCoinAddress,oneinchTokens[event.target.value].address);
-                //setQuoteData(swapCoinAmount);
-                //console.log("expect swapCoinAddressOut ",oneinchTokens[event.target.value].address)
-                //console.log(" real swapCoinAddressOut ",swapCoinAddressOut)
-                //FindAvailableToken(event.target.value,1) 
                 }}>
                 {renderAvailableTokens()}
         </select>

@@ -127,8 +127,8 @@ export const AlertCard = () => {
               </>
         :
         <>
-        
         <FaBan  className={signOutStyle.iError} />
+        
         <h4 className={signOutStyle.hError}> Login to Get Alerts </h4>
         </>
       }

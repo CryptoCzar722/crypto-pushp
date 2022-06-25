@@ -30,31 +30,18 @@ export const PortFolioCard = () => {
   const [cardCoin, setCardCoin] = useState([]);
   const[sendAddress,setSendAddress] = useState("waiting");
   const[chain,setChain] = useState("");
-  
+  //application data
+  const { isAuthenticated, logout, Moralis, user, ethAddress, authenticate, authError, isAuthenticating } = useMoralis();
+  const Web3Api = useMoralisWeb3Api();
   const optionsERC20 = {
     method: 'GET',
     //url: `https://deep-index.moralis.io/api/v2/${}/erc20?chain=0x38`,
-    url: 'https://deep-index.moralis.io/api/v2/0x3B7Be8B0a1538d41B2D9784327CB951ee74D7D4E/erc20?chain=0x38',
+    url:`https://deep-index.moralis.io/api/v2/${user.attributes.accounts}/erc20?chain=0x38`,//'https://deep-index.moralis.io/api/v2/0x3B7Be8B0a1538d41B2D9784327CB951ee74D7D4E/erc20?chain=0x38',
     headers: {
       'accept': 'application/json',
       'X-API-Key': 'ZwRSxOl8dC52wkmj42u34rKl92UimdHvbO1kg1oVXktQ5fHKprjNvHl3zbCbiUuW'
     }
   };
-
-  //application data
-  const { isAuthenticated, logout, Moralis, user, ethAddress, authenticate, authError, isAuthenticating } = useMoralis();
-  const Web3Api = useMoralisWeb3Api();
-  const handleCustomLogin = async () => {
-    await authenticate({
-      provider: "web3Auth",
-      clientId: "BN-6dNNgKK_DJmhff63kvmqoyfUMVTEYdjRbp_pIZCvdPmj69n94pHl4rVCymrqmuUQAnB91e-5Go2TA2LzSdyM",
-      chainId: Moralis.Chains.BNB,
-      theme: 'dark',
-      appLogo: "",
-      logingMethodsOrder : ["google", "facebook", "twitter"]//, "reddit", "discord", "twitch", "apple", "github", "linkedin", "email_passwordless"]
-    });
-  };
-
   const FindToken = (tokenAddy) => { 
     console.log("tokenAddy-> ",tokenAddy);
     balanceERC20.forEach(element =>{
