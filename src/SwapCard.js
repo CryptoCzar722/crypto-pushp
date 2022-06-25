@@ -114,18 +114,18 @@ const renderAvailableTokens = () => {
     in_out == 0 ? setSwapCoin(oneinchTokens[tokenAddy].symbol) : setSwapCoinOut(oneinchTokens[tokenAddy].symbol);
     in_out == 0 ? setSwapCoinAddress(oneinchTokens[tokenAddy].address) : setSwapCoinAddressOut(oneinchTokens[tokenAddy].address)//.toUpperCase());
     
-    setQuoteData(swapCoinAmount);
+    //setQuoteData(swapCoinAmount);
   }
 
-const setQuoteData = async (amount)=>{
+const setQuoteData = async (amount,AddressIn,AddressOut)=>{
   setCalculatingPrice(true)
   if (amount != ""){
     setSwapCoinAmount(amount)
     await Moralis.initPlugins()
     const swapOptions = {
       chain: 'bsc', // The blockchain you want to use (eth/bsc/polygon)
-      fromTokenAddress: swapCoinAddress, // The token you want to swap
-      toTokenAddress: swapCoinAddressOut, // The token you want to receive
+      fromTokenAddress: AddressIn, // The token you want to swap
+      toTokenAddress: AddressOut, // The token you want to receive
       amount: Moralis.Units.Token(amount,"18"),
     };
     //console.log("swapOptions=",swapOptions);
@@ -135,7 +135,7 @@ const setQuoteData = async (amount)=>{
       console.log("quote.toTokenAmount-",quote.toToken.decimals);
       console.log("quote formatted-",Moralis.Units.FromWei(quote.toTokenAmount,quote.toToken.decimals))
       //setSwapCoinAmountOut(parseFloat(quote.toTokenAmount / 1000000000000000000).toFixed(2)) /// quote.toToken.decimals)
-      setSwapCoinAmountOut(Moralis.Units.FromWei(quote.toTokenAmount,quote.toToken.decimals))
+      setSwapCoinAmountOut(parseFloat(Moralis.Units.FromWei(quote.toTokenAmount,quote.toToken.decimals)).toFixed(4))
       setCalculatingPrice(false)
     }).catch((error)=>{
       console.log("error-",error);
@@ -162,12 +162,12 @@ const setQuoteData = async (amount)=>{
 //Tag add loading icon to output amount when http response is waiting.
 return ( 
     <div className={isMobile == false ? signOutStyle.signOutCard : signOutStyle.signOutCardMobile}>
-    <div>
-    <div className={signOutStyle.swapCardMini}>
-      <h4 className={signOutStyle.hAlert}> Swap</h4>
-      <h8>{swapCoinAddress} + {swapCoinAddressOut}</h8>
-      <img src= {tokenInImg} width="30" height="30"/> 
-      <select  className={signOutStyle.sSwap} onChange ={ (event) => { 
+      <div>
+      <div className={signOutStyle.swapCardMini}>
+        <h4 className={signOutStyle.hAlert}> Swap</h4>
+        <h8>{swapCoinAddress} + {swapCoinAddressOut}</h8>
+        <img src= {tokenInImg} width="30" height="30"/> 
+        <select  className={signOutStyle.sSwap} onChange ={ (event) => { 
                 //setTokenAddress(event.target.value) 
                 //console.log(oneinchTokens[event.target.value].address);
               setTokenInImg(oneinchTokens[event.target.value].logoURI); 
@@ -176,73 +176,74 @@ return (
               console.log("exp swapCoinAddressIn ",oneinchTokens[event.target.value].address)
               setSwapCoinAmountOut("--")
               console.log("real swapCoinAddressIn ",swapCoinAddress)
+              setQuoteData(swapCoinAmount,oneinchTokens[event.target.value].address,swapCoinAddressOut);
               //setQuoteData(swapCoinAmount);
               //console.log("swapCoinAddressIn ",swapCoinAddress)
                //FindAvailableToken(event.target.value,0) 
                 }}>
                 {renderAvailableTokens()}
-      </select> 
-      <input
+        </select> 
+        <input
           className= {signOutStyle.iSwap} //"form-control form-control-lg"
           type="number"
           placeholder={swapCoinAmount}
-          onChange={e => setQuoteData(e.target.value)}//e.target.value.toUpperCase())} 
+          onChange={e => setQuoteData(e.target.value, swapCoinAddress,swapCoinAddressOut)}//e.target.value.toUpperCase())} 
           required />
-      <img src= {tokenOutImg} width="30" height="30"/> 
-      <select  className={signOutStyle.sSwap} onChange ={ (event) => { 
+        <img src= {tokenOutImg} width="30" height="30"/> 
+        <select  className={signOutStyle.sSwap} onChange ={ (event) => { 
                 //setTokenAddress(event.target.value) 
                 //console.log(oneinchTokens[event.target.value].address);
                 setTokenOutImg(oneinchTokens[event.target.value].logoURI); 
                 setSwapCoinOut(oneinchTokens[event.target.value].symbol);
                 setSwapCoinAddressOut(oneinchTokens[event.target.value].address)//.toUpperCase());
                 setSwapCoinAmountOut("--")
+                setQuoteData(swapCoinAmount,swapCoinAddress,oneinchTokens[event.target.value].address);
                 //setQuoteData(swapCoinAmount);
                 //console.log("expect swapCoinAddressOut ",oneinchTokens[event.target.value].address)
                 //console.log(" real swapCoinAddressOut ",swapCoinAddressOut)
                 //FindAvailableToken(event.target.value,1) 
                 }}>
                 {renderAvailableTokens()}
-      </select>
-      <select  className={signOutStyle.sSwap} onChange ={ (event) => { setOrderType(event.target.value) }}>
+        </select>
+        <select  className={signOutStyle.sSwap} onChange ={ (event) => { setOrderType(event.target.value) }}>
             <option value="market">market</option>
             <option value="limit">limit</option>
-      </select>
-      {
-      calculatingPrice == false ? 
-      <p className={signOutStyle.pAlert}>  Amount Out : {swapCoinAmountOut}</p> 
-      :
-      <TailSpin
-        height="25"
-        width="200"
-        color='red'
-        ariaLabel='loading'
-        style = {"text-align : center"}
-      />
-      }
-      {orderType == "market" ? 
-      <hr></hr> 
-      :
-      <input
+        </select>
+        {
+        calculatingPrice == false ? 
+        <p className={signOutStyle.pAlert}>  Amount Out : {swapCoinAmountOut}</p> 
+        :
+        <TailSpin
+          height="25"
+          width="200"
+          color='red'
+          ariaLabel='loading'
+          style = {"text-align : center"}
+        />
+        }
+        {orderType == "market" ? 
+        <hr></hr> 
+        :
+        <input
           className= {signOutStyle.iSwap}//"form-control form-control-lg"
           type="text"
           placeholder={"50.0"}
           onChange={e => setLimitPrice(e.target.value.toUpperCase())} 
           required />
-      }
-          <button className={styles.swapButton} onClick = {swapTokens} >
+        }
+        <button className={styles.swapButton} onClick = {swapTokens} >
           Swap
-          </button>
-          {isAuthenticated ?
-          <button className={styles.signoutButton} onClick={logout}>
+        </button>
+        {isAuthenticated ?
+        <button className={styles.signoutButton} onClick={logout}>
           Logout
-          </button>
-          :          
-          <button className={styles.signinButton} onClick={handleCustomLogin}>
+        </button>
+        :          
+        <button className={styles.signinButton} onClick={handleCustomLogin}>
              Login
-          </button>
-
-          } 
-    </div>
+        </button>
+        } 
+      </div>
     {
       isMobile ? <></> : 
     <div className={signOutStyle.chart}>
