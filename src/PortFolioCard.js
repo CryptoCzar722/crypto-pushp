@@ -36,7 +36,7 @@ export const PortFolioCard = () => {
   const optionsERC20 = {
     method: 'GET',
     //url: `https://deep-index.moralis.io/api/v2/${}/erc20?chain=0x38`,
-    url:`https://deep-index.moralis.io/api/v2/${user.attributes.accounts}/erc20?chain=0x38`,//'https://deep-index.moralis.io/api/v2/0x3B7Be8B0a1538d41B2D9784327CB951ee74D7D4E/erc20?chain=0x38',
+    url:`https://deep-index.moralis.io/api/v2/${isAuthenticated ? user.attributes.accounts : "0x23C483A9EA4EA4b67B4D18397a746659baE05C7e"}/erc20?chain=0x38`,//'https://deep-index.moralis.io/api/v2/0x3B7Be8B0a1538d41B2D9784327CB951ee74D7D4E/erc20?chain=0x38',
     headers: {
       'accept': 'application/json',
       'X-API-Key': 'ZwRSxOl8dC52wkmj42u34rKl92UimdHvbO1kg1oVXktQ5fHKprjNvHl3zbCbiUuW'
@@ -102,7 +102,7 @@ export const PortFolioCard = () => {
   useEffect(() => {
     //console.log("swap card is authenticated ->", isAuthenticated);
     Moralis.start({"appId" : "zciDyDJrxgyMjOVHmbUo7IE8xtqxswlwZshrJRaz","serverUrl" : "https://tmplbudfhggp.usemoralis.com:2053/server"});
-    axios.request(optionsERC20).then(function (response) {
+    isAuthenticated ?  axios.request(optionsERC20).then(function (response) {
         //console.log("portfolio->",response.data[0]);
         console.log("response", (response.data));
         setBalanceERC20(response.data);
@@ -122,6 +122,7 @@ export const PortFolioCard = () => {
       }).then(()=> {
         FindToken(cardCoin.address);
       })
+      : console.log("not auth");
    }, []);
 
 const renderDropDataPortfolio = () => {
