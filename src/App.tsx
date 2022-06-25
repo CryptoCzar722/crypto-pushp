@@ -29,7 +29,9 @@ import {MarketPage} from './MarketPage';
 
 function App() {
   //console.log("process.env ",process.env)
+  
   const [pageState, setPageState] = useState("dex");
+
 //add settings to pick with tokens are up top
   const tickerSymbols = [
     {

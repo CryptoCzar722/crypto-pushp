@@ -4,11 +4,11 @@ import signOutStyle from "./styles/SignOut.module.css";
 import styles from "./styles/Home.module.css";
 import { useEffect, useState } from "react";
 //must be last import
-//const axios = require("axios");
 import TradingViewWidget from 'react-tradingview-widget';
 import { TechnicalAnalysis } from "react-ts-tradingview-widgets";
-//import { AdvancedRealTimeChart } from "react-ts-tradingview-widgets";
 import { BrowserView, MobileView, isBrowser, isMobile } from 'react-device-detect';
+
+import { TailSpin } from  'react-loader-spinner'
 
 export const SwapCard = () => {
   
@@ -32,12 +32,13 @@ export const SwapCard = () => {
   const [orderType,setOrderType] = useState("market");
   //in
   const [swapCoin, setSwapCoin] = useState("BNB")//USDC");
-  const [swapCoinAddress, setSwapCoinAddress] = useState("0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c");//"0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d");
-  const [swapCoinAmount, setSwapCoinAmount] = useState("0.0");
+  const [swapCoinAddress, setSwapCoinAddress] = useState("0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");//"0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d");
+  const [swapCoinAmount, setSwapCoinAmount] = useState("0.00");
   //out
   const [swapCoinOut, setSwapCoinOut] = useState("BNB");
-  const [swapCoinAddressOut, setSwapCoinAddressOut] = useState("0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c");
-  const [swapCoinAmountOut, setSwapCoinAmountOut] = useState("0.0");
+  const [swapCoinAddressOut, setSwapCoinAddressOut] = useState("0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
+  const [swapCoinAmountOut, setSwapCoinAmountOut] = useState("0.00");
+  
   //order stuff
   const [orderExchange,setOrderExchange] = useState("PancakeSwap");
   const [limitPrice,setLimitPrice] = useState("1");
@@ -46,7 +47,28 @@ export const SwapCard = () => {
   //imgs
   const [tokenInImg,setTokenInImg] = useState("https://tokens.1inch.io/0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c_1.png");//"https://tokens.1inch.io/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png")
   const [tokenOutImg,setTokenOutImg] = useState("https://tokens.1inch.io/0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c_1.png");
+  const [calculatingPrice, setCalculatingPrice] = useState(false);
+  /*function useStateCallback(initialState) {
+    const [[state, cb], setState] = useState([initialState, null]);
+    useEffect(
+      () => {
+        cb && cb(state);
+      },
+      [state]
+    );
+    const setStateCallback = (value, callback) => setState([value, callback]);
+    return [state, setStateCallback];
+  }
 
+  //const [val, setVal] = useStateCallback(0);
+  const [swapCoin, setSwapCoin] = useStateCallback("BNB")//USDC");
+  const [swapCoinAddress, setSwapCoinAddress] = useStateCallback("0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c");//"0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d");
+  const [swapCoinAmount, setSwapCoinAmount] = useStateCallback("0.00");
+  //out
+  const [swapCoinOut, setSwapCoinOut] = useStateCallback("BNB");
+  const [swapCoinAddressOut, setSwapCoinAddressOut] = useStateCallback("0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c");
+  const [swapCoinAmountOut, setSwapCoinAmountOut] = useStateCallback("0.00");
+  */
   const fetchBalance = async () => {
     try {
       //tag 
@@ -85,17 +107,19 @@ const renderAvailableTokens = () => {
   }
 
   const FindAvailableToken = async (tokenAddy, in_out) => { 
-    console.log("token OBJ", oneinchTokens[tokenAddy])
-    
-    in_out == 0 ?  setTokenInImg(oneinchTokens[tokenAddy].logoURI) :setTokenOutImg(oneinchTokens[tokenAddy].logoURI); 
+    //console.log("token OBJ", oneinchTokens[tokenAddy])
+    //console.log("symbol ",oneinchTokens[tokenAddy].symbol)
+    //console.log("address ",oneinchTokens[tokenAddy].address)
+    in_out == 0 ? setTokenInImg(oneinchTokens[tokenAddy].logoURI) :setTokenOutImg(oneinchTokens[tokenAddy].logoURI); 
     in_out == 0 ? setSwapCoin(oneinchTokens[tokenAddy].symbol) : setSwapCoinOut(oneinchTokens[tokenAddy].symbol);
     in_out == 0 ? setSwapCoinAddress(oneinchTokens[tokenAddy].address) : setSwapCoinAddressOut(oneinchTokens[tokenAddy].address)//.toUpperCase());
-    //console.log("swapCoinAmount=",swapCoinAmount);
+    
     setQuoteData(swapCoinAmount);
   }
 
-  const setQuoteData = async (amount)=>{
-    if (amount != ""){
+const setQuoteData = async (amount)=>{
+  setCalculatingPrice(true)
+  if (amount != ""){
     setSwapCoinAmount(amount)
     await Moralis.initPlugins()
     const swapOptions = {
@@ -104,30 +128,29 @@ const renderAvailableTokens = () => {
       toTokenAddress: swapCoinAddressOut, // The token you want to receive
       amount: Moralis.Units.Token(amount,"18"),
     };
-    console.log("swapOptions=",swapOptions);
-    
-    const quote = await Moralis.Plugins.oneInch.quote(swapOptions);
-    //console.log(quote.toTokenAmount);//.estimatedGas);
-    setSwapCoinAmountOut(quote.toTokenAmount / 1000000000000000000) /// quote.toToken.decimals)
+    //console.log("swapOptions=",swapOptions);
+    //const quote = 
+    await Moralis.Plugins.oneInch.quote(swapOptions).then((quote) => {
+      console.log("quote.toTokenAmount-",quote.toTokenAmount);
+      console.log("quote.toTokenAmount-",quote.toToken.decimals);
+      console.log("quote formatted-",Moralis.Units.FromWei(quote.toTokenAmount,quote.toToken.decimals))
+      //setSwapCoinAmountOut(parseFloat(quote.toTokenAmount / 1000000000000000000).toFixed(2)) /// quote.toToken.decimals)
+      setSwapCoinAmountOut(Moralis.Units.FromWei(quote.toTokenAmount,quote.toToken.decimals))
+      setCalculatingPrice(false)
+    }).catch((error)=>{
+      console.log("error-",error);
+      setSwapCoinAmountOut("--");
+      setCalculatingPrice(false)
+    });
   }
-  else {//if (amount == "") {
+  else {
     setSwapCoinAmountOut("0.00");
+    setCalculatingPrice(false)
   }
 }
 
   const swapTokens = async ()=>{
-    await Moralis.initPlugins()
-    const swapOptions = {
-      chain: 'bsc', // The blockchain you want to use (eth/bsc/polygon)
-      fromTokenAddress: swapCoinAddress, // The token you want to swap
-      toTokenAddress: swapCoinAddressOut, // The token you want to receive
-      amount: swapCoinAmount,
-    };
-    console.log("swapOptions=",swapOptions);
-    
-    const quote = await Moralis.Plugins.oneInch.quote(swapOptions);
-    console.log(quote.toTokenAmount)//estimatedGas);
-
+    console.log("swapping tokens")
   }
 
 /*
@@ -141,32 +164,42 @@ return (
     <div className={isMobile == false ? signOutStyle.signOutCard : signOutStyle.signOutCardMobile}>
     <div>
     <div className={signOutStyle.swapCardMini}>
-      <h4 className={signOutStyle.hAlert}> Swap </h4>
+      <h4 className={signOutStyle.hAlert}> Swap</h4>
+      <h8>{swapCoinAddress} + {swapCoinAddressOut}</h8>
       <img src= {tokenInImg} width="30" height="30"/> 
       <select  className={signOutStyle.sSwap} onChange ={ (event) => { 
                 //setTokenAddress(event.target.value) 
-                console.log(oneinchTokens[event.target.value].address);
-               // setTokenInImg(oneinchTokens[event.target.value].logoURI); 
-               // setSwapCoin(oneinchTokens[event.target.value].symbol);
-               // setSwapCoinAddress(oneinchTokens[event.target.value].address)//.toUpperCase());
-                FindAvailableToken(event.target.value,0) 
+                //console.log(oneinchTokens[event.target.value].address);
+              setTokenInImg(oneinchTokens[event.target.value].logoURI); 
+              setSwapCoin(oneinchTokens[event.target.value].symbol);
+              setSwapCoinAddress(oneinchTokens[event.target.value].address)//.toUpperCase());
+              console.log("exp swapCoinAddressIn ",oneinchTokens[event.target.value].address)
+              setSwapCoinAmountOut("--")
+              console.log("real swapCoinAddressIn ",swapCoinAddress)
+              //setQuoteData(swapCoinAmount);
+              //console.log("swapCoinAddressIn ",swapCoinAddress)
+               //FindAvailableToken(event.target.value,0) 
                 }}>
                 {renderAvailableTokens()}
       </select> 
       <input
           className= {signOutStyle.iSwap} //"form-control form-control-lg"
           type="number"
-          placeholder={"0.0"}
-          onChange={e => setQuoteData(e.target.value.toUpperCase())}//e.target.value.toUpperCase())} 
+          placeholder={swapCoinAmount}
+          onChange={e => setQuoteData(e.target.value)}//e.target.value.toUpperCase())} 
           required />
       <img src= {tokenOutImg} width="30" height="30"/> 
       <select  className={signOutStyle.sSwap} onChange ={ (event) => { 
                 //setTokenAddress(event.target.value) 
-                console.log(oneinchTokens[event.target.value].address);
-               // setTokenOutImg(oneinchTokens[event.target.value].logoURI); 
-               // setSwapCoinOut(oneinchTokens[event.target.value].symbol);
-               // setSwapCoinAddressOut(oneinchTokens[event.target.value].address)//.toUpperCase());
-                FindAvailableToken(event.target.value,1) 
+                //console.log(oneinchTokens[event.target.value].address);
+                setTokenOutImg(oneinchTokens[event.target.value].logoURI); 
+                setSwapCoinOut(oneinchTokens[event.target.value].symbol);
+                setSwapCoinAddressOut(oneinchTokens[event.target.value].address)//.toUpperCase());
+                setSwapCoinAmountOut("--")
+                //setQuoteData(swapCoinAmount);
+                //console.log("expect swapCoinAddressOut ",oneinchTokens[event.target.value].address)
+                //console.log(" real swapCoinAddressOut ",swapCoinAddressOut)
+                //FindAvailableToken(event.target.value,1) 
                 }}>
                 {renderAvailableTokens()}
       </select>
@@ -174,7 +207,18 @@ return (
             <option value="market">market</option>
             <option value="limit">limit</option>
       </select>
-      <p className={signOutStyle.pAlert}>  Amount Out : {parseFloat(swapCoinAmountOut).toFixed(2)}</p> 
+      {
+      calculatingPrice == false ? 
+      <p className={signOutStyle.pAlert}>  Amount Out : {swapCoinAmountOut}</p> 
+      :
+      <TailSpin
+        height="25"
+        width="200"
+        color='red'
+        ariaLabel='loading'
+        style = {"text-align : center"}
+      />
+      }
       {orderType == "market" ? 
       <hr></hr> 
       :
@@ -231,6 +275,41 @@ return (
 
   );
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     /*
     <p className={signOutStyle.pAlert}>  Amount In : {swapCoinAmount }</p> 
