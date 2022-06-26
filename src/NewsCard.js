@@ -4,6 +4,7 @@ import signOutStyle from "./styles/SignOut.module.css";
 
 import { useEffect, useState } from "react";
 import { Timeline } from "react-ts-tradingview-widgets";
+import { BrowserView, MobileView, isBrowser, isMobile } from 'react-device-detect';
 
 export const NewsCard = () => {
   
@@ -16,7 +17,7 @@ export const NewsCard = () => {
   }, []);
 
   return ( 
-        <div className={signOutStyle.NewsCard}>
+        <div className={isMobile == false ? signOutStyle.NewsCard :  signOutStyle.NewsCardMobile}>
             <h4 className={signOutStyle.hNews}> News Presented by TradingView </h4>
             <Timeline colorTheme="light" feedMode="market" market="crypto" height={400} width="100%"></Timeline>
         </div>  

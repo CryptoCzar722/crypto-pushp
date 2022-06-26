@@ -33,7 +33,7 @@ export const SwapCard = () => {
   //order info
   const [orderType,setOrderType] = useState("market");
   //in
-  const [swapCoin, setSwapCoin] = useState("BNB")//USDC");
+  const [swapCoin, setSwapCoin] = useState("BUSD")//USDC");
   const [swapCoinAddress, setSwapCoinAddress] = useState("0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");//"0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d");
   const [swapCoinAmount, setSwapCoinAmount] = useState("0.00");
   //out
@@ -50,27 +50,7 @@ export const SwapCard = () => {
   const [tokenInImg,setTokenInImg] = useState("https://tokens.1inch.io/0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c_1.png");//"https://tokens.1inch.io/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png")
   const [tokenOutImg,setTokenOutImg] = useState("https://tokens.1inch.io/0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c_1.png");
   const [calculatingPrice, setCalculatingPrice] = useState(false);
-  /*function useStateCallback(initialState) {
-    const [[state, cb], setState] = useState([initialState, null]);
-    useEffect(
-      () => {
-        cb && cb(state);
-      },
-      [state]
-    );
-    const setStateCallback = (value, callback) => setState([value, callback]);
-    return [state, setStateCallback];
-  }
-
-  //const [val, setVal] = useStateCallback(0);
-  const [swapCoin, setSwapCoin] = useStateCallback("BNB")//USDC");
-  const [swapCoinAddress, setSwapCoinAddress] = useStateCallback("0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c");//"0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d");
-  const [swapCoinAmount, setSwapCoinAmount] = useStateCallback("0.00");
-  //out
-  const [swapCoinOut, setSwapCoinOut] = useStateCallback("BNB");
-  const [swapCoinAddressOut, setSwapCoinAddressOut] = useStateCallback("0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c");
-  const [swapCoinAmountOut, setSwapCoinAmountOut] = useStateCallback("0.00");
-  */
+  
   const fetchBalance = async () => {
     try {
       //tag 
@@ -102,16 +82,16 @@ const renderAvailableTokens = () => {
   return Object.keys(oneinchTokens).map((key, index) => {
   //const {address,decimals,logoURI,name,symbol} = oneinchTokens //destructuring 
   //console.log(oneinchTokens[key]);    
-  return (                          //oneinchTokens[key].symbol
-            <option key={key} value={key}>{oneinchTokens[key].name}</option>
+  return (          //default = {swapCoin}      //oneinchTokens[key].symbol
+            <option  key={key} value={key}>{oneinchTokens[key].name}</option>
             )
   })
   }
 
-
 const setQuoteData = async (amount,AddressIn,AddressOut)=>{
   setCalculatingPrice(true)
-  if (amount != ""){
+  if (amount != "")
+    {
     setSwapCoinAmount(amount)
     await Moralis.initPlugins()
     const swapOptions = {
@@ -122,35 +102,75 @@ const setQuoteData = async (amount,AddressIn,AddressOut)=>{
     };
     
     await Moralis.Plugins.oneInch.quote(swapOptions).then((quote) => {
+      console.log("quote-",quote);
       console.log("quote.toTokenAmount-",quote.toTokenAmount);
       console.log("quote.toTokenAmount-",quote.toToken.decimals);
-      console.log("quote formatted-",Moralis.Units.FromWei(quote.toTokenAmount,quote.toToken.decimals))
+      console.log("quote formatted-",parseFloat(Moralis.Units.FromWei(quote.toTokenAmount,quote.toToken.decimals)).toFixed(2))
+
+      if (parseFloat(Moralis.Units.FromWei(quote.toTokenAmount,quote.toToken.decimals)).toFixed(2) == "1.157920892373162e+59"){
       //old way broken leaving for ref of what not to do
       //setSwapCoinAmountOut(parseFloat(quote.toTokenAmount / 1000000000000000000).toFixed(2)) /// quote.toToken.decimals)
       //ideal method
-      setSwapCoinAmountOut(parseFloat(Moralis.Units.FromWei(quote.toTokenAmount,quote.toToken.decimals)).toFixed(4))
+      setSwapCoinAmountOut("1inch quote error - Retry")
+      }
+      else {
+        setSwapCoinAmountOut(parseFloat(Moralis.Units.FromWei(quote.toTokenAmount,quote.toToken.decimals)).toFixed(4))
+      }
       setCalculatingPrice(false)
+
     }).catch((error)=>{
       console.log("error-",error);
       setSwapCoinAmountOut("--");
       setCalculatingPrice(false)
     });
-  }
-  else {
+    }
+  else 
+    {
     setSwapCoinAmountOut("0.00");
     setCalculatingPrice(false)
-  }
+    }
 }
+const switchTokens = () => {
+  console.log("switch token0<->token1");
+  const token0 = swapCoinAddressOut;
+  const token1 = swapCoinAddress;
+  const token0Uri = tokenOutImg;
+  const token1Uri = tokenInImg;
+
+  setTokenInImg(token0Uri);
+  setTokenOutImg(token1Uri); 
+  setSwapCoin(token0);
+  setSwapCoinAddress(token1);
+  setSwapCoinAmountOut("--")
+  setQuoteData(swapCoinAmount,token0,token1);          
+};
 
   const swapTokens = async ()=>{
     console.log("swapping tokens")
-  }
+  };
 
 /*
 <select  className={signOutStyle.sSwap} onChange ={ (event) => { setOrderExchange(event.target.value) }}>
             <option value="PancakeSwap">PancakeSwap</option>
       </select>
-*/
+
+      <button className={styles.switchButton} onClick = {switchTokens} >
+          <FaArrowsAltV  className={signOutStyle.swapArrow} />
+        </button>
+
+         <div className={signOutStyle.smalltext}>{swapCoinAddress} to {swapCoinAddressOut}</div>
+
+         {orderType == "market" ? 
+        <hr></hr> 
+        :
+        <input
+          className= {signOutStyle.iSwap}//"form-control form-control-lg"
+          type="text"
+          placeholder={"50.0"}
+          onChange={e => setLimitPrice(e.target.value.toUpperCase())} 
+          required />
+        }
+         */
 
 //Tag add loading icon to output amount when http response is waiting.
 return ( 
@@ -158,15 +178,16 @@ return (
       <div>
       <div className={signOutStyle.swapCardMini}>
         <h4 className={signOutStyle.hAlert}> Swap</h4>
-        <div className={signOutStyle.smalltext}>{swapCoinAddress} to {swapCoinAddressOut}</div>
         <img src= {tokenInImg} width="30" height="30"/> 
+        <div className={signOutStyle.smalltext}>{swapCoinAddress} </div>
         <select  className={signOutStyle.sSwap} onChange ={ (event) => {  
               setTokenInImg(oneinchTokens[event.target.value].logoURI); 
               setSwapCoin(oneinchTokens[event.target.value].symbol);
               setSwapCoinAddress(oneinchTokens[event.target.value].address)
               setSwapCoinAmountOut("--")
               setQuoteData(swapCoinAmount,oneinchTokens[event.target.value].address,swapCoinAddressOut);
-                }}>
+                }}
+          defaultValue={swapCoin}>
                 {renderAvailableTokens()}
         </select> 
         <input
@@ -175,20 +196,18 @@ return (
           placeholder={swapCoinAmount}
           onChange={e => setQuoteData(e.target.value, swapCoinAddress,swapCoinAddressOut)}
           required />
+        
         <img src= {tokenOutImg} width="30" height="30"/> 
-        <FaLongArrowAltDown  className={signOutStyle.swapArrow} />
+        <div className={signOutStyle.smalltext}>{swapCoinAddressOut} </div>
         <select  className={signOutStyle.sSwap} onChange ={ (event) => { 
                 setTokenOutImg(oneinchTokens[event.target.value].logoURI); 
                 setSwapCoinOut(oneinchTokens[event.target.value].symbol);
                 setSwapCoinAddressOut(oneinchTokens[event.target.value].address)
                 setSwapCoinAmountOut("--")
                 setQuoteData(swapCoinAmount,swapCoinAddress,oneinchTokens[event.target.value].address);
-                }}>
+                }}
+                defaultValue={swapCoinOut}>
                 {renderAvailableTokens()}
-        </select>
-        <select  className={signOutStyle.sSwap} onChange ={ (event) => { setOrderType(event.target.value) }}>
-            <option value="market">market</option>
-            <option value="limit">limit</option>
         </select>
         {
         calculatingPrice == false ? 
@@ -202,14 +221,23 @@ return (
           style = {"text-align : center"}
         />
         }
-        {orderType == "market" ? 
+        <select  className={signOutStyle.sSwap} onChange ={ (event) => { setOrderType(event.target.value) }}>
+            <option value="market">market</option>
+            <option value="limit">limit</option>
+        </select>
+        {
+        //remove limit order until backend is done, or add variable in back end to flag it
+        orderType == "market" ? 
         <hr></hr> 
         :
         <input
           className= {signOutStyle.iSwap}//"form-control form-control-lg"
           type="text"
           placeholder={"50.0"}
-          onChange={e => setLimitPrice(e.target.value.toUpperCase())} 
+          onChange={e => 
+            //setLimitPrice(e.target.value.toUpperCase())
+            setSwapCoinAmountOut(e.target.value * swapCoinAmount)
+          } 
           required />
         }
         <button className={styles.swapButton} onClick = {swapTokens} >
