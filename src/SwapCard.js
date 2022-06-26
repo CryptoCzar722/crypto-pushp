@@ -34,6 +34,7 @@ export const SwapCard = () => {
   const [orderType,setOrderType] = useState("market");
   //in
   const [swapCoin, setSwapCoin] = useState("BUSD")//USDC");
+  const [swapCoinDecimals, setSwapCoinDecimals] = useState("18")
   const [swapCoinAddress, setSwapCoinAddress] = useState("0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");//"0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d");
   const [swapCoinAmount, setSwapCoinAmount] = useState("0.00");
   //out
@@ -89,8 +90,9 @@ const renderAvailableTokens = () => {
   }
 
 const setQuoteData = async (amount,AddressIn,AddressOut)=>{
+  //setTimeout(async () => {
   setCalculatingPrice(true)
-  if (amount != "")
+  if (amount != "" && calculatingPrice == false)
     {
     setSwapCoinAmount(amount)
     await Moralis.initPlugins()
@@ -98,7 +100,7 @@ const setQuoteData = async (amount,AddressIn,AddressOut)=>{
       chain: 'bsc',                 // The blockchain you want to use (eth/bsc/polygon)
       fromTokenAddress: AddressIn,  // The token you want to swap
       toTokenAddress: AddressOut,   // The token you want to receive
-      amount: Moralis.Units.Token(amount,"18"), //ensure to parse to correct deicmals
+      amount: Moralis.Units.Token(amount,swapCoinDecimals)//"18"), //ensure to parse to correct deicmals
     };
     
     await Moralis.Plugins.oneInch.quote(swapOptions).then((quote) => {
@@ -129,6 +131,7 @@ const setQuoteData = async (amount,AddressIn,AddressOut)=>{
     setSwapCoinAmountOut("0.00");
     setCalculatingPrice(false)
     }
+  //},1000);
 }
 const switchTokens = () => {
   console.log("switch token0<->token1");
@@ -182,6 +185,7 @@ return (
         <div className={signOutStyle.smalltext}>{swapCoinAddress} </div>
         <select  className={signOutStyle.sSwap} onChange ={ (event) => {  
               setTokenInImg(oneinchTokens[event.target.value].logoURI); 
+              setSwapCoinDecimals(oneinchTokens[event.target.value].decimals);
               setSwapCoin(oneinchTokens[event.target.value].symbol);
               setSwapCoinAddress(oneinchTokens[event.target.value].address)
               setSwapCoinAmountOut("--")
