@@ -1,5 +1,5 @@
 import React from 'react';
-import { useMoralis } from "react-moralis";
+import { useMoralis,useMoralisWeb3Api } from "react-moralis";
 import signOutStyle from "./styles/SignOut.module.css";
 import styles from "./styles/Home.module.css";
 import { useEffect, useState } from "react";
@@ -9,13 +9,26 @@ import { TechnicalAnalysis } from "react-ts-tradingview-widgets";
 import { BrowserView, MobileView, isBrowser, isMobile } from 'react-device-detect';
 import { TailSpin } from  'react-loader-spinner'
 
-import { FaLongArrowAltDown,FaArrowsAltV } from 'react-icons/fa';
-
+const axios = require("axios");
+//import { FaLongArrowAltDown,FaArrowsAltV } from 'react-icons/fa';
+/*
+curl -X 'GET' \
+  'https://api.1inch.io/v4.0/56/tokens' \
+  -H 'accept: application/json'
+*/
+const options1Inch = {
+  method: 'GET',
+  url:'https://api.1inch.io/v4.0/56/tokens',
+  headers: {
+    'accept': 'application/json'
+  }
+};
 
 export const SwapCard = () => {
   
   //application data
   const { isAuthenticated, logout, Moralis, user, ethAddress, authenticate, authError, isAuthenticating } = useMoralis();
+  const Web3Api = useMoralisWeb3Api();
 
   const handleCustomLogin = async () => {
     await authenticate({
@@ -41,7 +54,8 @@ export const SwapCard = () => {
   const [swapCoinOut, setSwapCoinOut] = useState("BNB");
   const [swapCoinAddressOut, setSwapCoinAddressOut] = useState("0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
   const [swapCoinAmountOut, setSwapCoinAmountOut] = useState("0.00");
-  
+  const [swapCoinAmountOut1Inch, setSwapCoinAmountOut1Inch] = useState("0.00");
+
   //order stuff
   const [orderExchange,setOrderExchange] = useState("PancakeSwap");
   const [limitPrice,setLimitPrice] = useState("1");
@@ -53,29 +67,41 @@ export const SwapCard = () => {
   const [calculatingPrice, setCalculatingPrice] = useState(false);
   
   const fetchBalance = async () => {
-    try {
+    //try {
       //tag 
       //console.log(user.attributes.authData.moralisEth.signature)
-      const options = { chain: Moralis.Chains.BNB };
-      const balance = await Moralis.Web3API.account.getNativeBalance(options);
+      const options = { chain: '0x38' , address: user.attributes.accounts};
+      const balance = await Web3Api.account.getNativeBalance(options);
+      console.log("address + balance ", user.attributes.accounts,"...", balance)
       setBalance(balance.balance / 10 ** 18);
-    } catch {}
+    //} catch {}
   };
 
-  const fetchTokens = async () => {
+  /*const fetchTokens = async () => {
     await Moralis.initPlugins()
     const tokens = await Moralis.Plugins.oneInch.getSupportedTokens({
       chain: "bsc", // The blockchain you want to use (eth/bsc/polygon)
     });
-    //console.log("tokens=",(tokens.tokens));
+    console.log("tokens=",(tokens));
+    console.log("tokens.tokens=",(tokens.tokens));
     setOneinchTokens(tokens.tokens);
-  }
+  }*/
   
   useEffect(() => {
-    //fetchBalance();
     //console.log("swap card is authenticated ->", isAuthenticated);
     Moralis.start({"appId" : "zciDyDJrxgyMjOVHmbUo7IE8xtqxswlwZshrJRaz","serverUrl" : "https://tmplbudfhggp.usemoralis.com:2053/server"});
-    fetchTokens()
+    console.log("isAuthenticated:",isAuthenticated);
+    if (isAuthenticated) fetchBalance();
+    //fetchTokens();
+    //put axios calls in to backend later
+    axios.request(options1Inch).then(function (response) {
+            console.log("axios 1Inch response.data", response.data.tokens);
+            setOneinchTokens(response.data.tokens);
+        }).catch(function (error) {
+          console.error(error);
+          setOneinchTokens("");
+        });
+
   }, []);
   
 //NOTE: different than portfolio logic  must set object.keys first.
@@ -89,12 +115,35 @@ const renderAvailableTokens = () => {
   })
   }
 
+
+  /*
+  curl -X 'GET' \
+  'https://api.1inch.io/v4.0/56/quote?fromTokenAddress=0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE&toTokenAddress=0x111111111117dc0aa78b770fa6a738034120c302&amount=10000000000000000' \
+  -H 'accept: application/json'
+  */
 const setQuoteData = async (amount,AddressIn,AddressOut)=>{
   //setTimeout(async () => {
   setCalculatingPrice(true)
-  if (amount != "" && calculatingPrice == false)
+  if (amount != "")
     {
     setSwapCoinAmount(amount)
+    
+    const options1InchQuote = {
+      method: 'GET',
+      url:`https://api.1inch.io/v4.0/56/quote?fromTokenAddress=${AddressIn}&toTokenAddress=${AddressOut}&amount=${Moralis.Units.Token(amount,swapCoinDecimals)}`,
+      headers: {
+        'accept': 'application/json'
+        }
+      };
+
+    await axios.request(options1InchQuote).then(function (response) {
+      console.log("axios Quote 1Inch", response.data)
+      console.log("axios Quote 1Inch formatted", parseFloat(Moralis.Units.FromWei(response.data.toTokenAmount,response.data.toToken.decimals)).toFixed(2));          
+      setSwapCoinAmountOut1Inch(parseFloat(Moralis.Units.FromWei(response.data.toTokenAmount,response.data.toToken.decimals)).toFixed(2));
+    }).catch(function (error) {
+          console.error("axios error Quote", error);
+      });
+
     await Moralis.initPlugins()
     const swapOptions = {
       chain: 'bsc',                 // The blockchain you want to use (eth/bsc/polygon)
@@ -215,7 +264,7 @@ return (
         </select>
         {
         calculatingPrice == false ? 
-        <p className={signOutStyle.pAlert}>  Amount Out : {swapCoinAmountOut}</p> 
+        <p className={signOutStyle.pAlert}>  Moralis Amount Out : {swapCoinAmountOut}  or 1Inch Direct : {swapCoinAmountOut1Inch} </p> 
         :
         <TailSpin
           height="25"
@@ -225,10 +274,14 @@ return (
           style = {"text-align : center"}
         />
         }
-        <select  className={signOutStyle.sSwap} onChange ={ (event) => { setOrderType(event.target.value) }}>
+       { 
+       /*
+       //need to do the backend work
+       <select  className={signOutStyle.sSwap} onChange ={ (event) => { setOrderType(event.target.value) }}>
             <option value="market">market</option>
             <option value="limit">limit</option>
-        </select>
+        </select>*/
+        }
         {
         //remove limit order until backend is done, or add variable in back end to flag it
         orderType == "market" ? 
@@ -244,6 +297,7 @@ return (
           } 
           required />
         }
+        <p className={signOutStyle.pAlert}>  BNB : {balance}</p> 
         <button className={styles.swapButton} onClick = {swapTokens} >
           Swap
         </button>

@@ -155,8 +155,10 @@ const renderDropDataPortfolio = () => {
         <div>
           <h5 className= {signOutStyle.hTop10}> Portfolio </h5>
             <div className={signOutStyle.portfolioCardMini}>   
+            { 
+           /*
             <h5 className= {signOutStyle.hTop10}> Chain: </h5>
-            <select  className={signOutStyle.sAlert} onChange ={ (event) => { 
+           <select  className={signOutStyle.sAlert} onChange ={ (event) => { 
               //setAlertCoin(event.target.value) 
               setChain(event.target.value)
               }}>
@@ -166,6 +168,19 @@ const renderDropDataPortfolio = () => {
                   
                   <option value="ADA">SOL</option>
             </select> 
+              */}
+
+            <div>
+              <span className= {signOutStyle.hPortL}>Account Address : </span> 
+              <span className= {signOutStyle.hPortR}> {user.attributes.accounts}</span> 
+            </div>
+              <hr
+                style={{
+                    color: "black",
+                    backgroundColor: "black",
+                    height: 1
+                }}
+              />
             <h5 className= {signOutStyle.hTop10}> Coin: </h5>
               <select  className={signOutStyle.sPort} onChange ={ (event) => { 
                 //setTokenAddress(event.target.value) 
@@ -174,7 +189,7 @@ const renderDropDataPortfolio = () => {
                 {renderDropDataPortfolio()}
               </select>  
               <div>
-              <span className= {signOutStyle.hPortL}>Address : </span> 
+              <span className= {signOutStyle.hPortL}>Coin Address : </span> 
               <span className= {signOutStyle.hPortR}> {cardCoin.address}</span> 
               </div>
               <hr

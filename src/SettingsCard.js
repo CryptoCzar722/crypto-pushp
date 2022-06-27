@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { Timeline } from "react-ts-tradingview-widgets";
 import { BrowserView, MobileView, isBrowser, isMobile } from 'react-device-detect';
 
-export const NewsCard = () => {
+export const SettingsCard = () => {
   
   //application data
   const { isAuthenticated, logout, Moralis, user, ethAddress } = useMoralis();
@@ -18,7 +18,7 @@ export const NewsCard = () => {
 
   return ( 
         <div className={isMobile == false ? signOutStyle.NewsCard :  signOutStyle.NewsCardMobile}>
-            <h4 className={signOutStyle.hNews}> News Presented by TradingView </h4>
+            <h4 className={signOutStyle.hNews}> Settings </h4>
             <Timeline colorTheme="light" feedMode="market" market="crypto" height={400} width="100%"></Timeline>
         </div>  
   );

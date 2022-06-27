@@ -103,9 +103,52 @@
   margin-right     : 15px;
   margin-left      : 15px;
   padding          : 5px;
-  border-radius    : 2px;
+  border-radius    : 20px;
   border-width     : 0px;
+  height  :         40px;
   width            : 10vw;
+  font-size        : 14px;
+  color            : white;
+  background-image : linear-gradient(90deg, #0364ff, #1ac7fe);
+  cursor: pointer;
+}
+
+.pageButtonMobile{
+  margin-bottom    : 10px;
+  margin-right     : 2px;
+  margin-left      : 5px;
+  padding          : 5px;
+  border-radius    : 14px;
+  border-width     : 0px;
+  width            : 60px;
+  font-size        : 14px;
+  color            : white;
+  background-image : linear-gradient(90deg, #0364ff, #1ac7fe);
+  cursor: pointer;
+}
+.stgButtonMobile{
+  margin-bottom    : 10px;
+  margin-right     : 2px;
+  margin-left      : 5px;
+  padding          : 5px;
+  border-radius    : 20px;
+  border-width     : 0px;
+  width            : 30px;
+  font-size        : 14px;
+  color            : white;
+  background-image : linear-gradient(90deg, #0364ff, #1ac7fe);
+  cursor: pointer;
+}
+
+.stgButton{
+  margin-bottom    : 10px;
+  margin-right     : 15px;
+  margin-left      : 15px;
+  padding          : 5px;
+  border-radius    : 20px;
+  border-width     : 0px;
+  height  :         30px;
+  width            : 2vw;
   font-size        : 14px;
   color            : white;
   background-image : linear-gradient(90deg, #0364ff, #1ac7fe);
