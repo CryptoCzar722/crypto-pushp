@@ -3,26 +3,20 @@ import { useMoralis,useMoralisWeb3Api } from "react-moralis";
 import signOutStyle from "./styles/SignOut.module.css";
 import styles from "./styles/Home.module.css";
 import { useEffect, useState } from "react";
-//must be last import
+
 import TradingViewWidget from 'react-tradingview-widget';
 import { TechnicalAnalysis } from "react-ts-tradingview-widgets";
 import { BrowserView, MobileView, isBrowser, isMobile } from 'react-device-detect';
 import { TailSpin } from  'react-loader-spinner'
-
+//must be last import
 const axios = require("axios");
+
 //import { FaLongArrowAltDown,FaArrowsAltV } from 'react-icons/fa';
 /*
 curl -X 'GET' \
   'https://api.1inch.io/v4.0/56/tokens' \
   -H 'accept: application/json'
 */
-const options1Inch = {
-  method: 'GET',
-  url:'https://api.1inch.io/v4.0/56/tokens',
-  headers: {
-    'accept': 'application/json'
-  }
-};
 
 export const SwapCard = () => {
   
@@ -36,9 +30,20 @@ export const SwapCard = () => {
       clientId:"BCYdRX4SDVbsfHOGHTYDxF3b8ktRUAQDmvLIitizwaUVtWZeosFhOR13vJlCWJI2TKRwVLhPGJboxWa1n7Mfuso",//clientId: "BN-6dNNgKK_DJmhff63kvmqoyfUMVTEYdjRbp_pIZCvdPmj69n94pHl4rVCymrqmuUQAnB91e-5Go2TA2LzSdyM",
       chainId: '0x38',//Moralis.Chains.BNB,
       theme: 'dark',
-      appLogo: "",
-      logingMethodsOrder : ["google", "facebook", "twitter"]//, "reddit", "discord", "twitch", "apple", "github", "linkedin", "email_passwordless"]
+      //appLogo: "",
+      //logingMethodsOrder : ["google", "facebook", "twitter"]//, "reddit", "discord", "twitch", "apple", "github", "linkedin", "email_passwordless"]
     });
+  };
+
+  const [chain, setChain] = useState('56');
+
+  const options1Inch = {
+    method: 'GET',
+    //url:'https://api.1inch.io/v4.0/56/tokens',
+    url:`https://api.1inch.io/v4.0/${chain}/tokens`,
+    headers: {
+      'accept': 'application/json'
+    }
   };
 
   const [balance, setBalance] = useState(0);
@@ -114,7 +119,6 @@ const renderAvailableTokens = () => {
             )
   })
   }
-
 
   /*
   curl -X 'GET' \
@@ -201,6 +205,10 @@ const switchTokens = () => {
     console.log("swapping tokens")
   };
 
+  const loadNewChain = async (value) =>{
+    setChain(value)
+  }
+
 /*
 <select  className={signOutStyle.sSwap} onChange ={ (event) => { setOrderExchange(event.target.value) }}>
             <option value="PancakeSwap">PancakeSwap</option>
@@ -230,6 +238,11 @@ return (
       <div>
       <div className={signOutStyle.swapCardMini}>
         <h4 className={signOutStyle.hAlert}> Swap</h4>
+        <select  className={signOutStyle.sSwap} onChange ={ (event) => { loadNewChain(event.target.value)}}>
+            <option value="56">BSC</option>
+            <option value="1">ETH</option>
+            <option value="137">POLY</option>
+        </select>
         <img src= {tokenInImg} width="30" height="30"/> 
         <div className={signOutStyle.smalltext}>{swapCoinAddress} </div>
         <select  className={signOutStyle.sSwap} onChange ={ (event) => {  

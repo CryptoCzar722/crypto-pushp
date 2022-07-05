@@ -17,8 +17,15 @@ import { PortFolioCard } from './PortFolioCard';
 import { NewsCard } from './NewsCard';
 import { SettingsCard } from './SettingsCard';
 import {MarketPage} from './MarketPage';
+
 import { BrowserView, MobileView, isBrowser, isMobile } from 'react-device-detect';
 import { FiSettings } from 'react-icons/fi';
+
+/*
+<button className={isMobile ? styles.stgButtonMobile : styles.stgButton} onClick={() => setPageState("settings")}>
+          <FiSettings  className={signOutStyle.settingsIcon} />
+</button>
+*/
 
 function App() {
   //console.log("process.env ",process.env)
@@ -88,9 +95,6 @@ function App() {
             News
         </button>
 
-        <button className={isMobile ? styles.stgButtonMobile : styles.stgButton} onClick={() => setPageState("settings")}>
-          <FiSettings  className={signOutStyle.settingsIcon} />
-        </button>
         </div>
         {
         (pageState == "dex") ?
