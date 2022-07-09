@@ -35,8 +35,8 @@ export const SwapCard = () => {
     });
   };
 
-  const [chain, setChain] = useState('56');
 
+  const [chain, setChain] = useState('56');
   const options1Inch = {
     method: 'GET',
     //url:'https://api.1inch.io/v4.0/56/tokens',
@@ -106,9 +106,9 @@ export const SwapCard = () => {
           console.error(error);
           setOneinchTokens("");
         });
-
   }, []);
   
+
 //NOTE: different than portfolio logic  must set object.keys first.
 const renderAvailableTokens = () => {
   return Object.keys(oneinchTokens).map((key, index) => {
@@ -127,6 +127,9 @@ const renderAvailableTokens = () => {
   */
 const setQuoteData = async (amount,AddressIn,AddressOut)=>{
   //setTimeout(async () => {
+  if (swapCoinAmount == "0.00") {
+    return;
+  }
   setCalculatingPrice(true)
   if (amount != "")
     {
@@ -134,7 +137,8 @@ const setQuoteData = async (amount,AddressIn,AddressOut)=>{
     
     const options1InchQuote = {
       method: 'GET',
-      url:`https://api.1inch.io/v4.0/56/quote?fromTokenAddress=${AddressIn}&toTokenAddress=${AddressOut}&amount=${Moralis.Units.Token(amount,swapCoinDecimals)}`,
+      //url:`https://api.1inch.io/v4.0/56/quote?fromTokenAddress=${AddressIn}&toTokenAddress=${AddressOut}&amount=${Moralis.Units.Token(amount,swapCoinDecimals)}`,
+      url:`https://api.1inch.io/v4.0/${chain}/quote?fromTokenAddress=${AddressIn}&toTokenAddress=${AddressOut}&amount=${Moralis.Units.Token(amount,swapCoinDecimals)}`,
       headers: {
         'accept': 'application/json'
         }
@@ -144,13 +148,16 @@ const setQuoteData = async (amount,AddressIn,AddressOut)=>{
       console.log("axios Quote 1Inch", response.data)
       console.log("axios Quote 1Inch formatted", parseFloat(Moralis.Units.FromWei(response.data.toTokenAmount,response.data.toToken.decimals)).toFixed(2));          
       setSwapCoinAmountOut1Inch(parseFloat(Moralis.Units.FromWei(response.data.toTokenAmount,response.data.toToken.decimals)).toFixed(2));
+      setCalculatingPrice(false);
     }).catch(function (error) {
           console.error("axios error Quote", error);
+          setSwapCoinAmountOut1Inch("Quote error(1Inch)")
+          setCalculatingPrice(false);
       });
 
-    await Moralis.initPlugins()
+    /*await Moralis.initPlugins()
     const swapOptions = {
-      chain: 'bsc',                 // The blockchain you want to use (eth/bsc/polygon)
+      chain: chain == "56" ? 'bsc' : chain == '1' ? 'eth' : chain == '137' ? 'ply' : 'bsc',                 // The blockchain you want to use (eth/bsc/polygon)
       fromTokenAddress: AddressIn,  // The token you want to swap
       toTokenAddress: AddressOut,   // The token you want to receive
       amount: Moralis.Units.Token(amount,swapCoinDecimals)//"18"), //ensure to parse to correct deicmals
@@ -177,7 +184,7 @@ const setQuoteData = async (amount,AddressIn,AddressOut)=>{
       console.log("error-",error);
       setSwapCoinAmountOut("--");
       setCalculatingPrice(false)
-    });
+    });*/
     }
   else 
     {
@@ -205,9 +212,36 @@ const switchTokens = () => {
     console.log("swapping tokens")
   };
 
+
   const loadNewChain = async (value) =>{
     setChain(value)
+    
+    const options1Inch_Temp = {
+      method: 'GET',
+      //url:'https://api.1inch.io/v4.0/56/tokens',
+      url:`https://api.1inch.io/v4.0/${value}/tokens`,
+      headers: {
+        'accept': 'application/json'
+      }
+    };
+
+    axios.request(options1Inch_Temp).then(function (response) {
+      //console.log("Switching chain tokens", response.data.tokens);
+      //console.log("img base coin", response.data.tokens['0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'].logoURI);
+      console.log("switching chains...");
+      setTokenInImg(response.data.tokens['0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'].logoURI);
+      setTokenOutImg(response.data.tokens['0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'].logoURI);
+
+      setSwapCoinAddress('0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee');
+      setSwapCoinAddress('0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee');
+
+      setOneinchTokens(response.data.tokens);
+    }).catch(function (error) {
+      console.error(error);
+      setOneinchTokens("");
+    });
   }
+
 
 /*
 <select  className={signOutStyle.sSwap} onChange ={ (event) => { setOrderExchange(event.target.value) }}>
@@ -276,8 +310,8 @@ return (
                 {renderAvailableTokens()}
         </select>
         {
-        calculatingPrice == false ? 
-        <p className={signOutStyle.pAlert}>  Moralis Amount Out : {swapCoinAmountOut}  or 1Inch Direct : {swapCoinAmountOut1Inch} </p> 
+        calculatingPrice == false ? //Moralis Amount Out : {swapCoinAmountOut}  or 
+        <p className={signOutStyle.pAlert}>  1Inch Direct : {swapCoinAmountOut1Inch} </p> 
         :
         <TailSpin
           height="25"
