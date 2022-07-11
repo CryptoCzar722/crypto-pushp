@@ -399,6 +399,14 @@
   border: 1px solid;
 }
 
+
+.tdHistory {
+  font-size: 10px;
+  width : 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .pTextHidden {
   white-space: normal;
   overflow: hidden;

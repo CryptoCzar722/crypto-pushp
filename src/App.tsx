@@ -20,7 +20,7 @@ import {MarketPage} from './MarketPage';
 
 import { BrowserView, MobileView, isBrowser, isMobile } from 'react-device-detect';
 import { FiSettings } from 'react-icons/fi';
-
+import {TxHistory} from './TxHistory'
 /*
 <button className={isMobile ? styles.stgButtonMobile : styles.stgButton} onClick={() => setPageState("settings")}>
           <FiSettings  className={signOutStyle.settingsIcon} />
@@ -86,6 +86,9 @@ function App() {
         <button className={isMobile ? styles.pageButtonMobile : styles.pageButton} onClick={() => setPageState("port")}>
               Portfolio
         </button>
+        <button className={isMobile ? styles.pageButtonMobile : styles.pageButton} onClick={() => setPageState("history")}>
+            Tx History
+        </button>
 
         <button className={isMobile ? styles.pageButtonMobile : styles.pageButton} onClick={() => setPageState("alert")}>
               Alerts
@@ -100,6 +103,11 @@ function App() {
         (pageState == "dex") ?
           <div className={styles.backgroundParent}>
             <SwapCard/>
+          </div>
+          :
+          (pageState == "history") ?
+          <div className={styles.backgroundParent}>
+            <TxHistory/>
           </div>
           :
           pageState == "news" ? 

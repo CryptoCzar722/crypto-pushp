@@ -126,12 +126,12 @@ const renderAvailableTokens = () => {
   -H 'accept: application/json'
   */
 const setQuoteData = async (amount,AddressIn,AddressOut)=>{
-  //setTimeout(async () => {
-  if (swapCoinAmount == "0.00") {
-    return;
-  }
+ // if (swapCoinAmount == "0.00") {
+ //   console.log("no amount set");
+ //   return;
+ // }
   setCalculatingPrice(true)
-  if (amount != "")
+  if (amount != "0.00" || amount != "")
     {
     setSwapCoinAmount(amount)
     
@@ -214,6 +214,8 @@ const switchTokens = () => {
 
 
   const loadNewChain = async (value) =>{
+    //setSwapCoinAmount("0.00");
+    setSwapCoinAmountOut1Inch("0.00");
     setChain(value)
     
     const options1Inch_Temp = {
