@@ -9,6 +9,9 @@ import Pdf from "react-to-pdf";
 
 import { CSVLink,CSVDownload } from "react-csv";
 
+//import json2csv from "json2csv";
+
+
 export const TxHistory = () => {
 
     const headers = [
@@ -38,7 +41,9 @@ export const TxHistory = () => {
             setTransactionDetails(result.result)
             setTxSelected(result.result[0]) //result.result.length 
             //console.log("TX history length", (result.result.length))
-            console.log("TX history", (transactionDetails))
+            console.log("TX history ", (result.result))
+            //let array = Object.keys(result.result).map((key) => [Number(key), result.result[key]]);
+            console.log("TX history json", JSON.stringify(result.result))
             })
             .catch((e) => alert(e.message));
         };
@@ -102,7 +107,7 @@ export const TxHistory = () => {
                 }}
             />
             <div>
-                <CSVLink data = {Object.entries(Object.entries(transactionDetails))}>Export to CSV</CSVLink>
+                <CSVLink data = {JSON.stringify(transactionDetails)[0]}>Export to CSV</CSVLink>
             </div>
             <hr
                 style={{

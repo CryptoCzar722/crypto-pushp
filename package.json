@@ -13,6 +13,7 @@
     "@web3auth/web3auth": "^1.0.0",
     "dot-env": "^0.0.1",
     "dotenv": "^16.0.1",
+    "json2csv": "^5.0.7",
     "moralis": "^1.8.0",
     "react": "^18.1.0",
     "react-alert": "^7.0.3",
