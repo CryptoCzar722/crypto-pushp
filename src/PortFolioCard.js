@@ -181,13 +181,19 @@ const renderDropDataPortfolio = () => {
                     height: 1
                 }}
               />
-            <h5 className= {signOutStyle.hTop10}> Coin: </h5>
               <select  className={signOutStyle.sPort} onChange ={ (event) => { 
                 //setTokenAddress(event.target.value) 
                 FindToken(event.target.value) 
                 }}>
                 {renderDropDataPortfolio()}
               </select>  
+              <hr
+                style={{
+                    color: "black",
+                    backgroundColor: "black",
+                    height: 1
+                }}
+              />
               <div>
               <span className= {signOutStyle.hPortL}>Coin Address : </span> 
               <span className= {signOutStyle.hPortR}> {cardCoin.address}</span> 

@@ -223,7 +223,17 @@
 .sPort {
   height: 25px;
   width: 150px;
-  margin-bottom : 25px;
+  margin-top : 5px;
+  margin-bottom : 5px;
+  border-radius: 50px;
+  text-align: center;
+}
+
+.sTransactions {
+  height: 25px;
+  max-width: 1000px;
+  margin-top : 5px;
+  margin-bottom : 5px;
   border-radius: 50px;
   text-align: center;
 }
