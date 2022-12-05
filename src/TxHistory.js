@@ -43,7 +43,7 @@ export const TxHistory = () => {
             //console.log("TX history length", (result.result.length))
             console.log("TX history ", (result.result))
             //let array = Object.keys(result.result).map((key) => [Number(key), result.result[key]]);
-            console.log("TX history json", JSON.stringify(result.result))
+            //console.log("TX history json", JSON.stringify(result.result))
             })
             .catch((e) => alert(e.message));
         };
