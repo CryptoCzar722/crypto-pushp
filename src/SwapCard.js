@@ -27,8 +27,8 @@ export const SwapCard = () => {
   const handleCustomLogin = async () => {
     await authenticate({
       provider: "web3Auth",
-      //clientId:"BCYdRX4SDVbsfHOGHTYDxF3b8ktRUAQDmvLIitizwaUVtWZeosFhOR13vJlCWJI2TKRwVLhPGJboxWa1n7Mfuso",//
-      clientId: "BN-6dNNgKK_DJmhff63kvmqoyfUMVTEYdjRbp_pIZCvdPmj69n94pHl4rVCymrqmuUQAnB91e-5Go2TA2LzSdyM",
+      clientId:"BCYdRX4SDVbsfHOGHTYDxF3b8ktRUAQDmvLIitizwaUVtWZeosFhOR13vJlCWJI2TKRwVLhPGJboxWa1n7Mfuso",//
+      //clientId: "BN-6dNNgKK_DJmhff63kvmqoyfUMVTEYdjRbp_pIZCvdPmj69n94pHl4rVCymrqmuUQAnB91e-5Go2TA2LzSdyM",
       chainId: '0x38',//Moralis.Chains.BNB,
       theme: 'dark',
       //appLogo: "",
